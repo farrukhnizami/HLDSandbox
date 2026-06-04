@@ -25,43 +25,20 @@ _Short textual description, probably in tabular use-case format. If requirements
 Keep these excerpts as short as possible. Balance readability of this document with potential redundancy w.r.t to requirements documents._
 
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
-Royal Mail operates a national network of Processing Sites - Mail Centres, RDCs, Hubs and Super Hubs, International, through which all letter and parcel volumes are sorted, consolidated, and dispatched. Workforce planning across this estate has historically relied on a combination of MDS (Master Duty System), spreadsheet-based duty rosters, and locally held overtime sign-off processes. This fragmentation creates discrepancies between planned hours, scanned attendance, and paid hours in PSP, with downstream consequences for cost recognition, finance reporting, and audit assurance.
-
-The Front Line Demand and Supply (FDS) application already deployed for Delivery Offices is being extended to Processing Sites to provide a single, integrated, auditable workforce-planning platform across the frontline estate. The MVP scope is defined in the Processing - High Level Requirements artefact (story IDs MDS++_++MVP01++_++01 through MDS++_++MVP24++_++01).
-
-*Capabilities delivered by FDS at Processing Sites:*
 
 [width="100%",cols="5%,25%,70%",options="header",]
 |===
 |*++#++* |*Capability* |*Description*
-|1 |Daily Attendance Planning |Structured scheduling interfaces for duty planning across delivery offices and processing sites. Consumes master duty and reference data from DDS for deliveries and MDS for Processing sites , establishing a standardised, auditable record of scheduling intent across the frontline estate.
-|2 |Overtime Planning |A dedicated scheduling environment for overtime attendance across delivery offices and processing sites. Generates structured OT plans that serve as the authoritative reference for Qlik Reporting.
-|3 |Overtime Timesheet |Cross-references the approved OT plan against real-time PDA and Console attendance scan data. Authorised personnel such as site managers, shift managers and book-room staff review and approve records for overtime payment processing via PSP.
-|4 |Agency Timesheet |Cross-references agency worker shift plans against PDA and Console attendance scan data. Approved records are transmitted to the JoinedUp agency payroll platform via API, eliminating manual data re-entry and accelerating cost recognition.
-|5 |RCS Reporting |Reconciles planned versus actual hours across delivery offices and processing sites, disaggregated by workforce category - AWD, overtime, and agency. Generates structured data sets consumed by Royal Mail's financial reporting infrastructure for cost governance and expenditure management.
 |===
 
 *Top-level functional requirements (Must-have, MVP):*
 
-* Import Processing duty data from MDS into FDS for all Mail Centres, Parcel Hubs and Super Hubs (MDS++_++MVP01++_++01).
-* Allocate duty holders and rotation weeks against the imported duty data (MDS++_++MVP03++_++01–03).
-* Generate, edit and view daily attendance plans for a four-weeks-past / four-weeks-future window (MDS++_++MVP04++_++01–08).
-* Bring in and manage overtime duties from MDS, with auto-purge after four weeks (MDS++_++MVP19++_++01–03).
-* Manually create and amend overtime duties locally (MDS++_++MVP05++_++01–02).
-* Approve overtime against PDA / Console scan data and transmit authorised records to PSP (MDS++_++MVP10++_++01–05).
-* Approve schedule attendance against scan data and transmit to PSP (MDS++_++MVP11++_++01–05).
-* Provide Production Schedulers with 10-minute-granularity work-area headcount reports (MDS++_++MVP06++_++01).
-* Provide WAM/PSM with Employee Line View and Work Area Line View, including print outputs (MDS++_++MVP07, MDS++_++MVP08).
-* Merge the existing Deliveries and Processing SISO applications to remove the cross-access technical limitation (MDS++_++MVP16++_++01).
-* Send reporting feeds (attendance plan, OT, headcount) from FDS to DP/Qlik and back to MDS (MDS++_++MVP14++_++01, MDS++_++MVP15++_++01).
+* Sample Requirement 1: Sample
 
 *Out-of-scope for MVP (recorded for traceability):*
 
-* Future Duty Planning of differing duty structures (MDS++_++MVP13++_++01 - Won't-have; duty data revisions are infrequent and master data refreshes monthly).
-* Live Scan reporting and Pay-vs-Scan reporting in DP (MDS++_++MVP22, MDS++_++MVP23 - deferred).
-* PSP integration for future-dated employee records (out of scope for MVP).
+* Out of scope requirement : Sample
 
 === Quality Goals
 
@@ -77,16 +54,9 @@ _You should know the quality goals of your most important stakeholders, since th
 
 _A table with quality goals and concrete scenarios, ordered by priorities_
 
-*Royal Mail FDS - Processing Sites: Worked Example*
-
 [width="100%",cols="11%,25%,64%",options="header",]
 |===
 |*Priority* |*Quality Goal* |*Concrete Scenario / Acceptance Criterion*
-|1 |Auditability & Traceability |Every approved overtime, schedule-attendance and agency timesheet record carries a cryptographically immutable audit trail showing originating duty, scan events used for validation, approver identity and timestamp; complete trail retrievable within 5 seconds for any record over the last 7 years.
-|2 |Pay Accuracy |For 99.5% of approved timesheet submissions, the hours transmitted to PSP / JoinedUp match the verified PDA/Console scan-derived hours to within ±2 minutes; manual override events are logged and reportable.
-|3 |Operational Availability |FDS web UI available 99.7% of the time during the operational window 24x7, with planned maintenance windows agreed with service; degraded-mode local edit-and-resync supported for up to 2 hours of integration outage.
-|4 |Integration Reliability |Inbound MDS feeds processed within 30 minutes of receipt with 100% record-level reconciliation; outbound PSP/JoinedUp/DP feeds delivered within agreed SLAs and end-to-end reconciled daily.
-|5 |Usability for Front-line Managers |A trained PSM completes a full-shift attendance plan adjustment (cover absence, extend AWD to OT, re-allocate to work area) in under 90 seconds
 |===
 
 === Stakeholders
@@ -131,13 +101,5 @@ arc42 documentation._
 [width="99%",cols="30%,23%,47%",options="header",]
 |===
 |*Role / Name* |*Contact* |*Expectations*
-|Programme Sponsor |Phil / Martyn (Operations) |Delivers MVP capabilities to time and cost; gives go/no-go on requirement decisions; signs off MoSCoW and exclusions.
-|Solution Design |Rashu Khanna (SA) |Owns end-to-end solution, approves all integration and platform-level decisions, accountable for architectural integrity.
-|Processing Site Manager (PSM) |PSM community across Mail Centres, Parcel Hubs, Super Hubs |Daily attendance planning, OT planning, OT and schedule-attendance approval, duty-holder allocation, employee borrowing.
-|Pay Services |Payroll / Pay & Reward |Receives authorised OT and schedule-attendance records via integration; needs accurate, idempotent feeds.
-|JoinedUp Platform Owner |Agency payroll function |Receives authorised agency timesheets via API; expects reconcilable, replayable data flow.
-|MDS Owner |Alan Robers |Master data provider for duty sets; consumes FDS-back feeds (e.g. headcount).
-|DP / Qlik Reporting |Martyn |Consumes attendance, OT and compliance reporting data sets for enterprise reporting (Qlik / Qlik Sense).
-|Information Security & Data Protection |DPO |Confirms GDPR, role-based access and audit-log compliance; approves data-flow design.
-|Lead Architect |Farrukh Nizami |Confirms reuse of the FDS platform, alignment with integration standards and the cloud target operating model.
+|Programme Sponsor |Name (Area) |Delivers MVP capabilities to time and cost; gives go/no-go on requirement decisions; signs off MoSCoW and exclusions.
 |===

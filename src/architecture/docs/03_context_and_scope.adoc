@@ -54,23 +54,11 @@ the communication partner, the inputs, and the outputs._
 
 *++<++optionally: Explanation of external domain interfaces++>++*
 
-*Royal Mail FDS - Processing Sites: Worked Example*
-
-*FDS Processing Sites - Business Context:*
 
 [width="100%",cols="30%,30%,40%",options="header",]
 |===
 |*Communication Partner* |*Inputs to FDS* |*Outputs from FDS*
-|MDS (Master Duty System) |Master duty data, work-area splits, rotation patterns, processing-site reference data, OT duties, employee assignments to duties. |Headcount report and other operational reports back to MDS.
-|PSM (Processing Site Manager) |Duty-holder allocation, daily attendance plan adjustments, OT shift creation, employee site loans, OT and SA approvals. |Daily attendance plan, work-area split view, OT plan, four-week past/future planning view.
-|WAM (Work Area Manager) |Local read; print requests for shift output. |Employee Line View and Work Area Line View, hours-by-employee and hours-by-area, printable splits.
-|Production Scheduler |Report parameter requests (site, date range). |10-minute-granularity headcount-by-work-area report; total hours by shift and by day.
-|Site Manager / Book-room |Offline-validated OT confirmations; review actions. |OT approval queue, scan-vs-plan reconciliation.
-|PDA and Console |Employee scan-on / scan-off events with timestamp and location. |one-way ingest
-|RMG HR System (Employee Payrolls) |bi-directional |Authorised OT and Schedule-Attendance records for payroll processing.
-|Agency Payroll System |API acknowledgements; rejection reasons. |Approved agency timesheets via API.
-|Reporting and Visualisation |One-way egress |Attendance plan, OT, compliance and RCS data feeds.
-|User Identities |User identity and group membership. |Authentication assertions via SSO redirect.
+|App1 |Capability 1, Capability 2 |Data feeds into System.
 |===
 
 ==== Business Context - Diagram
@@ -123,18 +111,10 @@ diagrams. We will use Context diagrams from C4 model here.
 _See_ https://docs.arc42.org/section-3/[Context and Scope] _in the arc42
 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
 [width="99%",cols="20%,25%,25%,30%",options="header",]
 |===
 |*Partner* |*Channel* |*Protocol / Format* |*Direction & Cadence*
-|MDS |Direct – Sharepoint |FTPS |Inbound: monthly bulk {plus} on-demand delta. Outbound: scheduled report.
-|PSP |MQ |AQMP - XML |Outbound: per approval event, near-real-time.
-|JoinedUp |API Gateway → JoinedUp public API |REST/JSON over HTTPS |Outbound: per approved agency timesheet.
-|PDA estate |IBM MQ |AQMP - JSON |Inbound: continuous stream.
-|Console |IBM MQ |AQMP - JSON |Inbound: continuous stream.
-|DP / Qlik |BIG MFT |FTPS - CSV |Outbound: T{plus}1 data sets.
-|Active Directory / SSO |Identity provider (Entra ID) |SAML |Inbound: per-user auth.
 |===
 
 ==== Technical Context - Diagram
