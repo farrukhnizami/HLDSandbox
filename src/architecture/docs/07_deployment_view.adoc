@@ -44,7 +44,7 @@ for both Prod and DR (Pre-Prod)_
 
 _See_ https://docs.arc42.org/section-7/[Deployment View] _in the arc42 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 .Deployment Diagram
 image::../model/diagrams/deployment/azuredeployment.png[Deployment Diagram]

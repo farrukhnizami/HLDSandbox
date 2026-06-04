@@ -1,5 +1,5 @@
 
-= High-Level Design - Front Line Demand & Supply (FDS)
+= High-Level Design - --Enter Solution/Application here, e.g PDA-- (--Enter Solution/Application Acronym here, e.g PDA--)
 
 :imagesdir: images
 image::royalmaillogo.png[Royal Mail Logo,width=166,height=128,align="center"]
@@ -21,7 +21,7 @@ _A worked-example reference document for Solution Architects across Royal Mail_
 [width="100%",cols="35%,65%",options="header",]
 |===
 |*Field* |*Value*
-|Document Title |FDS Processing Sites - High-Level Design
+|Document Title |--Enter Solution/Application Acronym here, e.g PDA-- Processing Sites - High-Level Design
 |Version |1.0
 |Status |Draft for Review
 |Author a|

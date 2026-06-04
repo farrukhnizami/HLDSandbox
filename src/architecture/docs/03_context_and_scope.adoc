@@ -54,13 +54,13 @@ the communication partner, the inputs, and the outputs._
 
 *++<++optionally: Explanation of external domain interfaces++>++*
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
-*FDS Processing Sites - Business Context:*
+*[Enter Solution/Application Acronym here, e.g PDA] Processing Sites - Business Context:*
 
 [width="100%",cols="30%,30%,40%",options="header",]
 |===
-|*Communication Partner* |*Inputs to FDS* |*Outputs from FDS*
+|*Communication Partner* |*Inputs to [Enter Solution/Application Acronym here, e.g PDA]* |*Outputs from [Enter Solution/Application Acronym here, e.g PDA]*
 |MDS (Master Duty System) |Master duty data, work-area splits, rotation patterns, processing-site reference data, OT duties, employee assignments to duties. |Headcount report and other operational reports back to MDS.
 |PSM (Processing Site Manager) |Duty-holder allocation, daily attendance plan adjustments, OT shift creation, employee site loans, OT and SA approvals. |Daily attendance plan, work-area split view, OT plan, four-week past/future planning view.
 |WAM (Work Area Manager) |Local read; print requests for shift output. |Employee Line View and Work Area Line View, hours-by-employee and hours-by-area, printable splits.
@@ -95,7 +95,7 @@ external systems._
 IMPORTANT: We must ALSO include [red]*Big Picture* here
 
 .Big Picture
-image::../images/FDS - Big Picture.png[Big Picture]
+image::../images/[Enter Solution/Application Acronym here, e.g PDA] - Big Picture.png[Big Picture]
 
 *Motivation*
 
@@ -123,7 +123,7 @@ diagrams. We will use Context diagrams from C4 model here.
 _See_ https://docs.arc42.org/section-3/[Context and Scope] _in the arc42
 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 [width="99%",cols="20%,25%,25%,30%",options="header",]
 |===

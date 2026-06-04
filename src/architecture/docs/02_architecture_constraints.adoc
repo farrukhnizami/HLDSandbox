@@ -25,19 +25,19 @@ documentation or naming conventions)_
 _See_ https://docs.arc42.org/section-2/[Architecture Constraints] _in the
 arc42 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 === Technical Constraints
 
 [width="100%",cols="15%,30%,55%",options="header",]
 |===
 |*ID* |*Constraint* |*Explanation*
-|TC-01 |Reuse the existing FDS platform |FDS is already deployed for Deliveries and Collection Points. The Processing extension must be implemented on the same platform to avoid bifurcating the front-line estate model and to leverage the existing operational, support and compliance posture.
-|TC-02 |MDS is the system of record for duty data |All duty master data (duty codes, work-area splits, rotation patterns) originates in MDS. FDS holds an operational copy refreshed monthly and on demand it does not author duty in MVP
-|TC-03 |PSP is the only payroll endpoint for AWD/OT/SA |Authorised overtime and schedule-attendance records must be submitted to PSP for payment. FDS must produce PSP-compatible records and reconcile their acceptance.
+|TC-01 |Reuse the existing [Enter Solution/Application Acronym here, e.g PDA] platform |[Enter Solution/Application Acronym here, e.g PDA] is already deployed for Deliveries and Collection Points. The Processing extension must be implemented on the same platform to avoid bifurcating the front-line estate model and to leverage the existing operational, support and compliance posture.
+|TC-02 |MDS is the system of record for duty data |All duty master data (duty codes, work-area splits, rotation patterns) originates in MDS. [Enter Solution/Application Acronym here, e.g PDA] holds an operational copy refreshed monthly and on demand it does not author duty in MVP
+|TC-03 |PSP is the only payroll endpoint for AWD/OT/SA |Authorised overtime and schedule-attendance records must be submitted to PSP for payment. [Enter Solution/Application Acronym here, e.g PDA] must produce PSP-compatible records and reconcile their acceptance.
 |TC-04 |JoinedUp is the agency payroll endpoint |Approved agency timesheets must be transmitted to JoinedUp via its supported API. No bypass route is permitted.
 |TC-05 |Scan data sources are PDA and Console only |Validation of attendance hours uses only RMG-issued PDA scans and Console-recorded scans. No third-party time clocks are in scope.
-|TC-06 |Reporting flows into DP / Qlik |Strategic reporting consumes FDS data through the enterprise Data Platform (DP) and visualises it in Qlik / Qlik Sense. Bespoke reporting solutions are not permitted.
+|TC-06 |Reporting flows into DP / Qlik |Strategic reporting consumes [Enter Solution/Application Acronym here, e.g PDA] data through the enterprise Data Platform (DP) and visualises it in Qlik / Qlik Sense. Bespoke reporting solutions are not permitted.
 |TC-07 |Cloud-first hosting |New compute and integration components must run on the Royal Mail strategic cloud platform.
 | | |
 |===
@@ -48,7 +48,7 @@ arc42 documentation._
 |===
 |*ID* |*Constraint* |*Explanation*
 |OC-01 |CWU and trade-union sensitivities |Workforce-affecting changes (rosters, OT, scan-based pay validation) must be deployable with appropriate consultation; the design must support phased site-by-site rollout.
-|OC-02 |Working Time Regulations |The system must not facilitate non-compliant rest-period or maximum-hours patterns; warnings should surface at Over Time planning stage in FDS.
+|OC-02 |Working Time Regulations |The system must not facilitate non-compliant rest-period or maximum-hours patterns; warnings should surface at Over Time planning stage in [Enter Solution/Application Acronym here, e.g PDA].
 |OC-03 |GDPR |Personally Identifying Information (employee identifiers, scan timestamps, location) must be processed and retained in line with RMG's data-protection schedule.
 |OC-04 |Audit |Cost-affecting flows (RCS reporting, PSP/JoinedUp submissions) require segregation of duties and immutable audit trails to meet internal-control requirements.
 |===

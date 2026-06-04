@@ -31,17 +31,17 @@ in the following sections._
 _See_ https://docs.arc42.org/section-4/[Solution Strategy] _in the arc42
 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
-*The FDS Processing Sites architecture is governed by five fundamental decisions:*
+*The [Enter Solution/Application Acronym here, e.g PDA] Processing Sites architecture is governed by five fundamental decisions:*
 
 === Reuse, do not re-platform
 
-FDS is extended, not rebuilt. Processing capabilities are added as additional bounded contexts within the existing FDS solution, sharing identity, audit, integration, master data and storage layers. This delivers cost containment and consistency across Delivery and Processing Units.
+[Enter Solution/Application Acronym here, e.g PDA] is extended, not rebuilt. Processing capabilities are added as additional bounded contexts within the existing [Enter Solution/Application Acronym here, e.g PDA] solution, sharing identity, audit, integration, master data and storage layers. This delivers cost containment and consistency across Delivery and Processing Units.
 
 === Data-driven planning
 
-Duty masters (codes, work-area splits, rotation patterns) are owned by MDS and pulled into FDS on a monthly bulk cadence with on-demand deltas. FDS authoritatively derives plans from this master data; any operational variance is captured as a tracked, auditable adjustment rather than a redefinition of the duty. Additionally, FDS allows ad hoc overtime planning.
+Duty masters (codes, work-area splits, rotation patterns) are owned by MDS and pulled into [Enter Solution/Application Acronym here, e.g PDA] on a monthly bulk cadence with on-demand deltas. [Enter Solution/Application Acronym here, e.g PDA] authoritatively derives plans from this master data; any operational variance is captured as a tracked, auditable adjustment rather than a redefinition of the duty. Additionally, [Enter Solution/Application Acronym here, e.g PDA] allows ad hoc overtime planning.
 
 === Plan vs. scan reconciliation as the canonical pay-validation pattern
 
@@ -58,7 +58,7 @@ High-volume, low-latency flows (scan events and PSP OT flow) use the IBM MQ. Low
 |*Quality Goal* |*Strategy that delivers it*
 |Auditability & Traceability |Immutable event-sourced audit log on every approval/rejection/adjustment of OT Plan and timesheet
 |Pay Accuracy |Plan-vs-scan reconciliation (4.3) is the single approved path to pay; manual overrides logged.
-|Operational Availability |Reuse of the proven FDS platform (4.1); horizontally scalable web/app tier
+|Operational Availability |Reuse of the proven [Enter Solution/Application Acronym here, e.g PDA] platform (4.1); horizontally scalable web/app tier
 |Integration Reliability |Event-driven {plus} API-led pattern with at-least-once semantics,
 |Usability |Reuse (4.1) of an established UX, with Processing-specific screens layered on familiar navigation.
 |===

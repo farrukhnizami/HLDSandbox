@@ -37,20 +37,20 @@ _Following diagrams could be part of this section:_
 _See_ https://docs.arc42.org/section-6/[Runtime View] _in the arc42
 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 === Use Case 01 – Approve Overtime 
 
-Trigger: Manager Approve action on the FDS Over time timesheet screen
+Trigger: Manager Approve action on the [Enter Solution/Application Acronym here, e.g PDA] Over time timesheet screen
 
 . Delivery Office Manager (COM) opens the Timesheet Screen
-. Frontend → Backend → Timesheet Service API → FDS DB (fetch unapproved shifts)
+. Frontend → Backend → Timesheet Service API → [Enter Solution/Application Acronym here, e.g PDA] DB (fetch unapproved shifts)
 . Manager approves shifts
 . Timesheet Service publishes to IBM MQ topic "approved-shifts"
 . Parallel consumption: PSP (SAP) {plus} Data Platform both subscribe from MQ
 . Data Platform → Reporting (Qlik)
 . PSP sends acknowledgment → MQ → triggers Data Import (SSIS) to update shift status
-. Status flows back up: FDSDB → API → Backend → Frontend (manager sees updated status)
+. Status flows back up: [Enter Solution/Application Acronym here, e.g PDA]DB → API → Backend → Frontend (manager sees updated status)
 
 ==== Activity Diagram – Approve Overtime 
 

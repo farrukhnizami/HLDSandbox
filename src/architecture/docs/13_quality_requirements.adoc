@@ -50,7 +50,7 @@ of the term "quality". ++[++Bass{plus}21++]++ introduced the term
 *"Quality Attribute Utility Tree"* for this purpose._
 
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 [width="99%",cols="26%,74%",options="header",]
 |===
@@ -138,7 +138,7 @@ information:_
 * *Response*: _The outcome or behavior the system exhibits in reaction to the stimulus._
 * *Response Measure*: _The criteria or metric by which the system’s response is evaluated._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 ==== QS-01 - Morning peak load
 
@@ -159,8 +159,8 @@ information:_
 |*Aspect* |*Detail*
 |Source / Stimulus |OT IBM MQ connection error for a sustained period of 10 minutes.
 |Environment |Production.
-|Artifact |FDS Queue Manager, BIG IBM MQ
-|Response |Approvals continue to be captured in FDS; submissions queued durably; back-off retry; users informed of egress backlog without blocking.
+|Artifact |[Enter Solution/Application Acronym here, e.g PDA] Queue Manager, BIG IBM MQ
+|Response |Approvals continue to be captured in [Enter Solution/Application Acronym here, e.g PDA]; submissions queued durably; back-off retry; users informed of egress backlog without blocking.
 |Response measure |Zero pay records lost; backlog drains within 120 minutes of MQ recovery; no duplicate submissions.
 |===
 

@@ -29,13 +29,13 @@ of the overall risk analysis and measurement planning._
 _List of risks and/or technical debts, probably including suggested
 measures to minimize, mitigate or avoid risks or reduce technical debts._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 [width="100%",cols="10%,10%,35%,10%,35%",options="header",]
 |===
 |*ID* |*Type* |*Risk / Debt* |*Level* |*Mitigation*
 |R-01 |Risk |Pre-existing technical limitation between Deliveries SISO and Processing SISO (cross-access) increases regression scope of the merger (MDS++_++MVP16++_++01). |Medium |Phased rollout behind a feature flag; explicit regression suite for cross-domain users; PRE-PROD soak with shadow traffic.
-|R-02 |Risk |MDS bulk import on a monthly cadence creates blind windows for in-month duty changes. |Low |On-demand delta import endpoint; Duty Revision Workflow bridges in-month changes with audit. Plan to deploy the Duty composition capability in FDS for processing sites
-|R-03 |Tech Debt |Custom point to point integration with MDS using SharePoint since MDS (excel) doesn’t have a capability to connect to a SFTP site |Low |Plan to decommission the MDS and bring its capability fully into FDS
+|R-02 |Risk |MDS bulk import on a monthly cadence creates blind windows for in-month duty changes. |Low |On-demand delta import endpoint; Duty Revision Workflow bridges in-month changes with audit. Plan to deploy the Duty composition capability in [Enter Solution/Application Acronym here, e.g PDA] for processing sites
+|R-03 |Tech Debt |Custom point to point integration with MDS using SharePoint since MDS (excel) doesn’t have a capability to connect to a SFTP site |Low |Plan to decommission the MDS and bring its capability fully into [Enter Solution/Application Acronym here, e.g PDA]
 |R-04 |Risk |Performance under operational peaks, particularly Christmas pressure period (Q4). |High |Capacity test against a peak-traffic profile in
 |===

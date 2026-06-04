@@ -19,7 +19,7 @@ _You should clearly define your terms, so that all stakeholders_
 _A table with columns ++<++*Term*++>++ and ++<++*Definition*++>++.
 Potentially more columns in case you need translations._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
+*Royal Mail [Enter Solution/Application Acronym here, e.g PDA] - Processing Sites: Worked Example*
 
 [width="100%",cols="25%,75%",options="header",]
 |===
@@ -30,7 +30,7 @@ Potentially more columns in case you need translations._
 |DP |Royal Mail enterprise Data Platform deployed on GCP - the strategic landing zone for analytical data feeds; visualised primarily through Qlik.
 |Duty |A defined scheduled role at a site, with associated work-area splits and rotation pattern.
 |Duty Holder |The employee allocated to a duty for a given week of rotation.
-|FDS |Front Line Demand and Supply - the Royal Mail platform for workforce planning across the front-line estate.
+|[Enter Solution/Application Acronym here, e.g PDA] |[Enter Solution/Application Name here, e.g PDA] - the Royal Mail platform for workforce planning across the front-line estate.
 |JoinedUp |Third party SaaS platform used by RMG for requesting agency worker, also the destination for approved agency timesheets.
 |MDS |Master Duty System - the system of record for duty masters and reference data.
 |MoSCoW |Prioritisation taxonomy: Must-have, Should-have, Could-have, Won't-have.
@@ -39,7 +39,7 @@ Potentially more columns in case you need translations._
 |PDA |Personal Digital Assistant - handheld device used by front-line staff for scan operations.
 |Plan-vs-Scan |The reconciliation pattern comparing approved plans against PDA/Console scan data.
 |Processing Site |Mail Centres, Hubs and Super Hubs in scope of this HLD.
-|PSM |Processing Site Manager - primary daily user of FDS at a processing site.
+|PSM |Processing Site Manager - primary daily user of [Enter Solution/Application Acronym here, e.g PDA] at a processing site.
 |PSP |Royal Mail's payroll system
 |Qlik Cloud |Royal Mail's strategic visualisation platform for operational and finance reporting.
 |RCS |Resource Control System for reporting to the planned vs actual hours used by in a site for cost governance.

@@ -896,8 +896,8 @@ IMPORTANT: The above table should be used as a reference for the architecture th
 [width="100%",cols="20%,25%,35%, 20%",options="header",]
 |===
 |*STRIDE*                   |*Issue*    |*Mitigation*   |*Evidence*
-|*Spoofing*                   |*Spoofing: User Identity* - Attacker pretends to be a legitimate OPG/COM user to access FDS. +
-                             *Spoofing: Service Identity* - Attacker pretends to be a trusted upstream system (MQ/FTPS/JoinedUp).         |*Web Application Firewall (WAF)* - Protects FDS frontend and APIs from common web attacks +
+|*Spoofing*                   |*Spoofing: User Identity* - Attacker pretends to be a legitimate OPG/COM user to access [Enter Solution/Application Acronym here, e.g PDA]. +
+                             *Spoofing: Service Identity* - Attacker pretends to be a trusted upstream system (MQ/FTPS/JoinedUp).         |*Web Application Firewall (WAF)* - Protects [Enter Solution/Application Acronym here, e.g PDA] frontend and APIs from common web attacks +
                              *APIM Security Policies* - Rate limiting, JWT validation, IP filtering, schema validation +
                              *Role-Based Access Control (RBAC)* - Ensures least-privilege access for users and services +
                              *MQ Authentication & ACLs* - Prevents spoofing and tampering on MQ channels, Service identity validation      |
@@ -911,15 +911,15 @@ IMPORTANT: The above table should be used as a reference for the architecture th
                              *Repudiation: Admin Changes* - Admins deny configuration or security‑relevant changes.          
                             |*Audit Logging* - Captures user and admin actions for non-repudiation, Immutable logs, Admin activity logging' +
                              *SIEM Monitoring* - Detects anomalies, DoS attempts, tampering, and suspicious activity, Alerting on suspicious actions        |
-|*Information Disclosure*     |*Information Disclosure: PII & HR Data* - Exposure of personal and HR data from FDS DB and staging. +
+|*Information Disclosure*     |*Information Disclosure: PII & HR Data* - Exposure of personal and HR data from [Enter Solution/Application Acronym here, e.g PDA] DB and staging. +
                              *Information Disclosure: Integration Data* - Exposure of data in transit via MQ/FTPS/Data Platform.          
                             |*TLS Encryption* - Encrypts data in transit +
-                             *Encryption at Rest* - Protects DB contents, Protects FDS DB, Staging DB, and exported files +
+                             *Encryption at Rest* - Protects DB contents, Protects [Enter Solution/Application Acronym here, e.g PDA] DB, Staging DB, and exported files +
                              *Azure Key Vault* - Protects secrets, connection strings, certificates, Protects credentials +
                              *Role-Based Access Control (RBAC)* - Ensures least-privilege access for users and services, Restricts DB access        |
-|*Denial of Service (DoS)*    |*DoS: Frontend & APIs* - Overwhelming FDS frontend and APIs with traffic. +
+|*Denial of Service (DoS)*    |*DoS: Frontend & APIs* - Overwhelming [Enter Solution/Application Acronym here, e.g PDA] frontend and APIs with traffic. +
                              *DoS: Integration Channels* - Flooding MQ/FTPS to disrupt data flows.           
-                            |*Web Application Firewall (WAF)* - Protects FDS frontend and APIs from common web attacks, Blocks volumetric attacks +
+                            |*Web Application Firewall (WAF)* - Protects [Enter Solution/Application Acronym here, e.g PDA] frontend and APIs from common web attacks, Blocks volumetric attacks +
                              *APIM Security Policies* - Rate limiting +
                              *SIEM Monitoring* - Detects MQ flooding        |
 |*Elevation of Privilege*     |*Elevation of Privilege: Application* - Exploiting application flaws to gain higher privileges. +
