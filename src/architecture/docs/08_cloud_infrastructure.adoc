@@ -67,7 +67,7 @@ TIP: Aligned to the *subscription factory model* from your HLD artefact
 
 |===
 
-https://andotce.royalmailgroup.com/spaces/RDH/pages/454309842/IA-TS24+Cloud+Resource+Naming+Standard[*Standards*]
+https://example.com[*Standards*]
 
 
 === SKU’S Used (Per Region)
