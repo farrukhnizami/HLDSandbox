@@ -194,7 +194,7 @@ IMPORTANT: The architect MUST confirm coverage across all domains:
 |*Integration* | |
 |===
 
-https://andotce.royalmailgroup.com/pages/viewpage.action?pageId=504201390&spaceKey=HCI&title=Whitelisted%2BAzure%2BResource%2BTypes%2BStatus%2B-%2BSLZ[*Catalogue*]
+https://example.com[*Catalogue*]
 
 === Cost Optimisation and FinOps Alignment*
 

@@ -32,7 +32,6 @@ _Data Architecture should be captured in form of *Data Models* and *Data Flow Di
 === Data Flow Diagram
 
 .Data Flow Diagram - Level 0
-image::../model/diagrams/dfd_level0.png[Data Flow Diagram - Level 0]
 
 NOTE: For any new interface
 

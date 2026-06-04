@@ -57,7 +57,7 @@ _Security Architecture can be documented through diagrams, text and tables. This
 |===
 |*Title*    |*Response*
 |All Royal Mail Cyber Architecture Standards can be found here: +
-https://intranet.royalmailgroup.com/sites/ThinkSecure/ThinkCyber/SitePages/Welcome.aspx[Architecture Standards] +
+https://example.com[Architecture Standards] +
 Please confirm that you have reviewed these standards before completing the survey. |Yes/No
 |TDA Submission Name    |
 |TDA Approval Date Required |
