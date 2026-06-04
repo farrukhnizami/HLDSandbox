@@ -31,59 +31,12 @@ Architecture Decisions] for every important decision
 * List or table, ordered by importance and consequences or:
 * more detailed in form of separate sections per decision
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
-=== ADR-001 - Reuse the existing FDS platform rather than build a new Processing system
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Status |Accepted
-|Context |Processing-site workforce planning needs a single, integrated, auditable platform. A net-new build would duplicate identity, audit, integration and reporting layers already proven in FDS for Deliveries.
-|Decision |Extend FDS; add Processing as additional bounded contexts within the existing solution.
-|Consequences |{plus} Faster delivery, lower TCO, consistency across front line planning. Increased coupling within the FDS solution; mitigated by clear bounded contexts and a published internal API contract.
-|===
-
-=== ADR-002 - Merge the Deliveries and Processing SISO experiences
+=== ADR-001 - Reuse the existing platform rather than build a new  system
 
 [width="100%",cols="24%,76%",options="header",]
 |===
 |*Aspect* |*Detail*
 |Status |Accepted
-|Context |The current technical limitation prevents a user with Deliveries SISO access from also using Processing SISO (MDS++_++MVP16++_++01). This blocks shared-services users (e.g. cross-domain managers).
-|Decision |Implement a single web shell hosting both domains, governed by role-based authorisation.
-|Consequences |Removes the limitation; simpler user model.
 |===
 
-=== ADR-003 - MDS remains the system of record for duty data
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Status |Accepted
-|Context |Authoring duty masters in two systems would create reconciliation problems and dilute the audit trail.
-|Decision |FDS holds an operational copy of MDS-owned duty data, refreshed monthly with on-demand deltas; FDS does not author duty masters.
-|Consequences |{plus} Single source of truth, simpler reconciliation. Latency between MDS amendment and FDS visibility; mitigated by on-demand refresh
-|===
-
-=== ADR-004 - Duty-data viewing in FDS for MVP (MDS++_++MVP02++_++01/02)
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Status |Accepted
-|Context |PSMs can view duty data in FDS
-|Decision |FDS provides daily attendance plan screen for PSP to view and adjust the daily attendance plan for the processing site
-|Consequences |Sleeker planning solution available for the processing sites
-|===
-
-=== ADR-005 - Enforce idempotency on all payroll-bound submissions
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Status |Accepted
-|Context |Duplicate payroll postings have direct financial and reputational consequences.
-|Decision |Every PSP and JoinedUp submission carries a deterministic idempotency key; the receiver-side or our outbound adapter rejects duplicates.
-|Consequences |{plus} Pay accuracy protected during retries and outages.
-|===

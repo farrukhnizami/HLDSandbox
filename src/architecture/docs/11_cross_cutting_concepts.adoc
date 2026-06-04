@@ -62,28 +62,21 @@ three components, whereas security is relevant only for two components._
 _See_ https://docs.arc42.org/section-8/[Concepts] _in the arc42
 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
 === Identity, Authentication and Authorisation
 
-Authentication is delegated to Royal Mail AD via SAML; authorisation is enforced through AD groups including Planner-++<++of Location++>++, Approver-++<++of Location++>++, Book-room-++<++of Location++>++.
 
 === Audit and Traceability
 
-An append-only audit store retains every state-changing action: plan amendments, OT/SA approvals, agency-timesheet submissions, and manual overrides. Each record carries actor identity, timestamp, source data references (scan event IDs, plan IDs). Retention is seven years, aligned with audit requirements.
 
 === Integration Resilience
 
-All outbound integrations are idempotent and replayable. PSP and JoinedUp submissions use opaque idempotency keys derived from (employee, shift, approval-version).Dead-letter queues are monitored with alert thresholds.
 
 === Data Privacy and Retention
 
-Personal data minimisation: only employee identifiers required for plan/scan/pay reconciliation are processed; names and full personal records remain in source systems. Retention schedules align with the RMG data-protection policy (7 years of archived data, 1 year of live data). Subject-access requests are serviceable through a support request.
 
 === Logging, Monitoring and Observability
 
-Structured JSON logs, application metrics and distributed traces are emitted from every component and forwarded to the central observability platform. Service-level objectives (SLOs) for each capability are published; alerting is keyed off SLO burn rates rather than raw error counts. Operational dashboards expose plan-vs-scan reconciliation health, payroll backlog, and integration error rates.
 
 === User-experience consistency across the merged web app shell
 
-The merger of the Deliveries and Processing shells (MDS++_++MVP16++_++01) is designed to be invisible to users: a single navigation, a single notification model, and a single search. Per-capability screens follow the existing Delivery patterns to minimise re-training cost for users moving between domains.

@@ -50,24 +50,10 @@ of the term "quality". ++[++Bass{plus}21++]++ introduced the term
 *"Quality Attribute Utility Tree"* for this purpose._
 
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
 [width="99%",cols="26%,74%",options="header",]
 |===
 |*Category (ISO 25010)* |*Quality requirement*
-|Functional Suitability |All MVP capabilities operate to the acceptance criteria defined in user stories; no critical defect open at go-live.
-|Performance Efficiency |Daily Attendance Plan view loads in ≤ 2s at 95th percentile; OT Timesheet queue loads in ≤ 3s for a typical Mail Centre payload.
-|Compatibility |Compatible with Royal Mail standard browser estate (Edge current and current-1, Chrome current and current-1).
-|Usability |PSM full-shift adjustment under 90s
-|Reliability |Service availability 99.7% in the operational window; payroll-egress completeness 100% (with latency tolerance).
-|Security a|
-Sonarqube Reporting on the code with no high and critical issues, remediation plan for medium issues.
-
-Annual penetration test; quarterly access-rights review
-
-Encryption in transit and at rest.
-
-|Maintainability |Each component independently buildable, testable, deployable; codebase coverage target 70%{plus}.
 |===
 
 === Quality Scenarios (selected)
@@ -138,40 +124,4 @@ information:_
 * *Response*: _The outcome or behavior the system exhibits in reaction to the stimulus._
 * *Response Measure*: _The criteria or metric by which the system’s response is evaluated._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
-==== QS-01 - Morning peak load
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Source / Stimulus |Concurrent login of 600 PSMs/WAMs across UK processing sites, Concurrent login of 800 COM across UK delivery sites within a 30-minute window.
-|Environment |Production, normal-day load profile.
-|Artifact |Web shell application
-|Response |All users authenticated and able to view and modify current weeks plan.
-|Response measure |≥ 99% of logins succeed within 5 seconds; Attendance plan load ≤ 2 seconds.
-|===
-
-==== QS-02 - MQ outage degraded-mode
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Source / Stimulus |OT IBM MQ connection error for a sustained period of 10 minutes.
-|Environment |Production.
-|Artifact |FDS Queue Manager, BIG IBM MQ
-|Response |Approvals continue to be captured in FDS; submissions queued durably; back-off retry; users informed of egress backlog without blocking.
-|Response measure |Zero pay records lost; backlog drains within 120 minutes of MQ recovery; no duplicate submissions.
-|===
-
-==== QS-03 - Audit retrieval
-
-[width="100%",cols="24%,76%",options="header",]
-|===
-|*Aspect* |*Detail*
-|Source / Stimulus |Internal audit requests the full approval trail for a specific OT payment from 12 months ago.
-|Environment |Production.
-|Artifact |Audit & Logging
-|Response |The audit trail is retrieved with all linked scan and plan references.
-|Response measure |Retrieval ≤ 10 seconds; trail completeness 100%; tamper-evidence verified
-|===

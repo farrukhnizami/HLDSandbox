@@ -44,7 +44,6 @@ for both Prod and DR (Pre-Prod)_
 
 _See_ https://docs.arc42.org/section-7/[Deployment View] _in the arc42 documentation._
 
-*Royal Mail FDS - Processing Sites: Worked Example*
 
 .Deployment Diagram
 image::../model/diagrams/deployment/azuredeployment.png[Deployment Diagram]
@@ -54,11 +53,7 @@ image::../model/diagrams/deployment/azuredeployment.png[Deployment Diagram]
 [width="100%",cols="20%,34%,46%",options="header",]
 |===
 |*Environment* |*Purpose* |*Notes*
-|DEV |Engineering team development and unit-integration testing. |Mocked MDS, PSP, JoinedUp; synthetic scan events generated.
-|SIT |Systems Integration Testing. |Wired to MDS-SIT, PSP-SIT, JoinedUp-Sandbox; representative reference data.
-|UAT |User Acceptance Testing with PSMs and WAMs. |Production-like data volumes; restricted user pool.
-|PRE-PROD |Performance testing |Production-equivalent capacity; chaos and failover drills run here.
-|PROD |Live operational service across all Mail Centres, Hubs and Super Hubs. |High-availability across two UK regions; primary/secondary DR pattern.
+
 |===
 
 === System Landscape 
@@ -73,18 +68,7 @@ image::../model/diagrams/index.png[System Landscape Diagram]
 [width="100%",cols="24%,32%,44%",options="header",]
 |===
 |*Tier* |*Components* |*Building blocks hosted*
-|Edge | |Public ingress for web shell (BB12) and partner APIs (BB9).
-|Web tier |Angular App |BB12 web shell.
-|Application tier |Containerised microservices (AKS) behind internal load-balancer. |BB1, BB2, BB3, BB4, BB5, BB6, BB7, BB8, BB10.
-|Integration tier |API Gateway {plus} SSIS {plus} AMQP |BB9. Bridges to PSP, JoinedUp, MDS, PDA, Console.
-|Data tier |Managed relational store (SQL Server |BB1–BB8 persistence; BB11 audit.
-|Analytics export |Scheduled extract jobs using SSIS |BB6 reporting outputs.
-|Identity |AD {plus} Conditional Access. |BB10.
-|Observability |Centralised structured logs, metrics |BB11 {plus} platform-wide.
+
 |===
 
 *Quality and performance features:*
-
-* Active/active across two UK Atos data centres for the application and integration tiers; database with synchronous geo-replication.
-* RPO ≤ 15 minutes, RTO ≤ 4 hours for the full service; payroll-egress queues are durable and replayable.
-* All inter-tier traffic on private networking; no public ingress to the application tier.
