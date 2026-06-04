@@ -83,7 +83,6 @@ external systems._
 IMPORTANT: We must ALSO include [red]*Big Picture* here
 
 .Big Picture
-image::../images/FDS - Big Picture.png[Big Picture]
 
 *Motivation*
 
@@ -120,4 +119,3 @@ documentation._
 ==== Technical Context - Diagram
 
 .Technical Context
-image::../model/diagrams/context.png[Technical Context]

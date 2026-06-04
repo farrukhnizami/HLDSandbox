@@ -37,13 +37,13 @@ _Following diagrams could be part of this section:_
 _See_ https://docs.arc42.org/section-6/[Runtime View] _in the arc42
 documentation._
 
-=== Use Case 01 – Approve Overtime 
+=== Use Case 01 – Approve  
 
 
-==== Activity Diagram – Approve Overtime 
+==== Activity Diagram –   
 
-.Activity Diagram – Approve Overtime
+.Activity Diagram – 
 
-==== Sequence Diagram – Approve Overtime
+==== Sequence Diagram – Approve 
 
-.Sequence Diagram – Approve Overtime
+.Sequence Diagram – Approve 
