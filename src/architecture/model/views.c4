@@ -1,0 +1,95 @@
+views {
+    //C4 Context Diagram
+    view context {
+        title 'System Context'
+        include 
+            FDS, 
+            OPG, 
+            COM, 
+            DeliveryAssurance, 
+            PSM, 
+            JoinedUp,
+            M5,
+            MDM,
+            DataPlatform,
+            PSP,
+            DeliverySystemApps,
+            barcodescanner,
+            BIG
+        autoLayout TopBottom
+    }
+
+/*
+    view fds of FDS {
+        title 'FDS Container Diagram'
+        include 
+            FDS.**
+        autoLayout LeftRight
+    }
+*/
+    //C4 Container Diagram
+    view container {
+        title 'Container Diagram'
+        include 
+            FDS,
+            FDS.*, 
+            OPG, 
+            COM, 
+            DeliveryAssurance, 
+            PSM, 
+            JoinedUp,
+            M5,
+            MDM,
+            DataPlatform,
+            PSP,
+            DeliverySystemApps,
+            barcodescanner,
+            BIG
+    }
+
+    //C4 Component Diagram
+    view backendcomponents {
+        title 'Backend Components'
+        include 
+            FDS.backend,
+            FDS.backend.*,
+            FDS.apis,
+            FDS.databases
+    }
+
+    //C4 Component Diagram
+    view frontendcomponents {
+        title 'Frontend Components'
+        include 
+            FDS,
+            FDS.frontend,
+            FDS.frontend.*,
+            FDS.apis,
+            FDS.databases
+    }
+
+    //Landscape Diagram
+    view landscape {
+        title 'System Landscape'
+        include 
+            FDS, 
+            OPG, 
+            COM, 
+            DeliveryAssurance, 
+            PSM, 
+            barcodescanner,
+            DeliverySystemApps,
+            JoinedUp,
+            FDS.databases,
+            FDS.frontend,
+            FDS.backend,
+            FDS.apis,
+            FDS.dataintegration,
+            BIG.*,
+            M5,
+            MDM,
+            DataPlatform,
+            Reporting,
+            PeopleApp
+    }
+}

@@ -1,0 +1,137 @@
+/*
+specification {
+  element threat
+  element securityBoundary
+}
+
+model {
+  t_spoof_user = threat 'Spoofing: User Identity' {
+    description 'Attacker pretends to be a legitimate OPG/COM user to access FDS.'
+  }
+  t_spoof_service = threat 'Spoofing: Service Identity' {
+    description 'Attacker pretends to be a trusted upstream system (MQ/FTPS/JoinedUp).'
+  }
+  t_tamper_payload = threat 'Tampering: API Payloads' {
+    description 'Modification of duty, timesheet or attendance data in transit.'
+  }
+  t_tamper_files = threat 'Tampering: Import Files' {
+    description 'Modification of files sent via FTPS before ingestion.'
+  }
+  t_repudiation_user = threat 'Repudiation: User Actions' {
+    description 'Users deny having approved duties or timesheets.'
+  }
+  t_repudiation_admin = threat 'Repudiation: Admin Changes' {
+    description 'Admins deny configuration or security‑relevant changes.'
+  }
+  t_info_pii = threat 'Information Disclosure: PII & HR Data' {
+    description 'Exposure of personal and HR data from FDS DB and staging.'
+  }
+  t_info_integration = threat 'Information Disclosure: Integration Data' {
+    description 'Exposure of data in transit via MQ/FTPS/Data Platform.'
+  }
+  t_dos_frontend = threat 'DoS: Frontend & APIs' {
+    description 'Overwhelming FDS frontend and APIs with traffic.'
+  }
+  t_dos_integration = threat 'DoS: Integration Channels' {
+    description 'Flooding MQ/FTPS to disrupt data flows.'
+  }
+  t_eop_app = threat 'Elevation of Privilege: Application' {
+    description 'Exploiting application flaws to gain higher privileges.'
+  }
+  t_eop_db = threat 'Elevation of Privilege: Database' {
+    description 'Abusing DB permissions to bypass application controls.'
+  }
+  // Threat modelling (optional)
+  threat_sql = threat 'SQL Injection'
+  threat_replay = threat 'Token Replay Attack'
+  threat_phishing = threat 'Phishing Attack'
+
+  // --- Data Flows (from your DFD) ---
+  barcodescanner -> FDS.dataintegration.dataimport 'Attendance data'
+  PSP -> FDS.dataintegration.dataimport 'Absences, HR master data, overtime status'
+  M5 -> FDS.dataintegration.dataimport 'Fleet data'
+  Winpak -> FDS.dataintegration.dataimport 'ID card data'
+
+  FDS.dataintegration.dataimport -> FDS.databases.StagingDB 'Raw imported data'
+  FDS.dataintegration.dataimport -> FDS.databases.FDSDB 'Validated data'
+
+  FDS.databases.FDSDB -> FDS.backend.dutymanager 'Duty data'
+  FDS.databases.FDSDB -> FDS.backend.timesheet 'Timesheet data'
+  FDS.databases.FDSDB -> FDS.backend.attendanceplan 'Attendance plan data'
+
+  FDS.backend.dutymanager -> FDS.apis.dutymanagerservice 'Duty operations'
+  FDS.backend.timesheet -> FDS.apis.timesheetservice 'Timesheet operations'
+  FDS.backend.attendanceplan -> FDS.apis.attendanceplanservice 'Attendance plan operations'
+
+  FDS.apis.dutymanagerservice -> FDS.frontend.dutymanager 'Duty data'
+  FDS.apis.timesheetservice -> FDS.frontend.timesheet 'Timesheet data'
+  FDS.apis.attendanceplanservice -> FDS.frontend.attendanceplan 'Attendance plan data'
+  FDS.apis.approvalworkflowservice -> FDS.frontend.approvals 'Approval workflow data'
+
+  // --- STRIDE Threats (from your STRIDE model) ---
+  // Spoofing
+  t_spoof_user -> FDS.frontend 'Uses stolen credentials'
+  t_spoof_service -> BIG.MQ 'Forged messages'
+
+  // Tampering
+  t_tamper_payload -> FDS.apis 'Alters API payloads'
+  t_tamper_files -> BIG.FTPS 'Modifies import files'
+
+  // Repudiation
+  t_repudiation_user -> FDS.frontend.timesheet 'Approvals without audit trail'
+  t_repudiation_admin -> FDS.apis.actionLog 'Missing admin audit logs'
+
+  // Information Disclosure
+  t_info_pii -> FDS.databases.FDSDB 'PII exposure'
+  t_info_integration -> BIG.MQ 'Data leakage in transit'
+
+  // Denial of Service
+  t_dos_frontend -> FDS.frontend 'Traffic flooding'
+  t_dos_integration -> BIG.MQ 'Message flooding'
+
+  // Elevation of Privilege
+  t_eop_app -> FDS.backend 'Privilege escalation via backend'
+  t_eop_db -> FDS.databases.FDSDB 'DB-level privilege escalation'
+}
+
+views {
+  view dfd_stride_combined {
+    title 'DFD + STRIDE Combined View'
+
+    // Data sources
+    include barcodescanner, PSP, M5, Winpak
+
+    // Core FDS data flow components
+    include FDS.dataintegration.dataimport
+    include FDS.databases.StagingDB
+    include FDS.databases.FDSDB
+    include FDS.backend.*
+    include FDS.apis.*
+    include FDS.frontend.*
+
+    // Integration channels
+    include BIG.MQ, BIG.FTPS
+
+    // All STRIDE threats
+    include threat_phishing, threat_replay, threat_sql
+
+    // Optionalvisually group threats
+    style threat_phishing {
+      color red
+      shape rectangle
+      opacity 80%
+    }
+    style threat_replay {
+      color green
+      shape rectangle
+      opacity 80%
+    }
+    style threat_sql {
+      color indigo
+      shape rectangle
+      opacity 80%
+    }
+  }
+}
+*/
+

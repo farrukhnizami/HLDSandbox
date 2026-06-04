@@ -1,0 +1,76 @@
+deployment {
+    user = internet 'Internet' {
+        instanceOf COM {
+            style {
+                size sm
+                textSize md
+                color green
+            }
+        }
+    }
+    prod = environment 'Production' {
+        description 'Production Environment'
+            
+        fdswebapp = appservices 'App Service Plan' {
+            instanceOf FDS.frontend 'FDS Web Application' {
+                technology 'Angular'
+                style {
+                    icon tech:angular
+                }
+            }
+            instanceOf FDS.backend {
+                technology '.NET'
+                style {
+                    icon tech:net
+                }
+            }
+        }
+
+        dotnetapp = appservices '.NET Application' {
+            technology '.NET'
+            style {
+                icon tech:net
+            }
+            instanceOf FDS.apis {
+                technology '.NET'
+                icon azure:api-proxy
+            }
+        }
+
+        ssisservice = appservices 'SSIS Packages' {
+            technology 'SSIS'
+            style {
+                icon azure:ssis-lift-and-shift-ir
+            }
+            instanceOf FDS.dataintegration {
+                icon azure:web-jobs
+            }
+        }
+
+        appservices = appservices 'Azure Services' {
+            instanceOf FDS.backend.caching {
+                technology 'Azure Redis Cache'
+                icon azure:cache-redis
+            }
+            instanceOf FDS.backend.secretmanagement {
+                technology 'Azure Key Vault'
+                icon azure:key-vaults
+            }
+            instanceOf FDS.backend.appstorage {
+                technology 'Azure Storage Accounts'
+                icon azure:storage-accounts
+            }
+            fdswebapp -> appservices 'FDS backend components interacts with various Azure services' {
+                description 'FDS backend components use Azure services for caching, storing application secrets and files'
+            }
+        }
+
+        databases = sqldatabase 'SQL Server Managed Instance' {
+            instanceOf FDS.databases {
+                technology 'Azure SQL Managed Instance'
+                icon azure:sql-managed-instance
+            }
+        }
+        
+    }
+}

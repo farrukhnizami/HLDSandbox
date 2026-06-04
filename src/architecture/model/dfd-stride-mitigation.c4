@@ -1,0 +1,253 @@
+/*
+specification {
+  element securityActor
+  element securityService
+  element securityBoundary
+  element threat
+}
+
+model {
+
+  //Mitigation Controls
+
+  waf = securityService 'Web Application Firewall (WAF)' {
+    description 'Protects FDS frontend and APIs from common web attacks'
+  }
+
+  apim_policies = securityService 'APIM Security Policies' {
+    description 'Rate limiting, JWT validation, IP filtering, schema validation'
+  }
+
+  tls = securityService 'TLS Encryption' {
+    description 'Encrypts data in transit across all channels'
+  }
+
+  encryption_at_rest = securityService 'Encryption at Rest' {
+    description 'Protects FDS DB, Staging DB, and exported files'
+  }
+
+  rbac = securityService 'Role-Based Access Control (RBAC)' {
+    description 'Ensures least-privilege access for users and services'
+  }
+
+  audit_logging = securityService 'Audit Logging' {
+    description 'Captures user and admin actions for non-repudiation'
+  }
+
+  siem_monitoring = securityService 'SIEM Monitoring' {
+    description 'Detects anomalies, DoS attempts, tampering, and suspicious activity'
+  }
+
+  keyvault = securityService 'Azure Key Vault' {
+    description 'Protects secrets, connection strings, certificates'
+  }
+
+  input_validation = securityService 'Input Validation' {
+    description 'Prevents SQL injection and malformed payloads'
+  }
+
+  mq_auth = securityService 'MQ Authentication & ACLs' {
+    description 'Prevents spoofing and tampering on MQ channels'
+  }
+
+  ftps_hardening = securityService 'FTPS Hardening' {
+    description 'Ensures secure file transfer with MFA, IP allowlists, and checksums'
+  }
+
+  // --- Trust Boundaries ---
+  fdsBoundary = securityBoundary 'FDS Application Boundary'
+  dataBoundary = securityBoundary 'Data Integration Boundary'
+  externalBoundary = securityBoundary 'External Systems Boundary'
+
+  // Trust boundaries
+  FDS -> fdsBoundary
+  FDS.dataintegration -> dataBoundary
+  email-provider -> externalBoundary
+  JoinedUp -> externalBoundary
+  barcodescanner -> externalBoundary
+  PSP -> externalBoundary
+  M5 -> externalBoundary
+  Winpak -> externalBoundary
+
+  //Spoofing
+  t_spoof_user = threat 'Spoofing: User Identity' {
+    description 'Attacker pretends to be a legitimate OPG/COM user to access FDS.'
+  }
+  t_spoof_service = threat 'Spoofing: Service Identity' {
+    description 'Attacker pretends to be a trusted upstream system (MQ/FTPS/JoinedUp).'
+  }
+
+  t_spoof_user -> FDS.frontend 'Uses stolen credentials / session tokens'
+  t_spoof_service -> BIG.MQ 'Sends forged messages'
+  t_spoof_service -> BIG.FTPS 'Uploads forged files'
+
+  //Tampering
+  t_tamper_payload = threat 'Tampering: API Payloads' {
+    description 'Modification of duty, timesheet or attendance data in transit.'
+  }
+  t_tamper_files = threat 'Tampering: Import Files' {
+    description 'Modification of files sent via FTPS before ingestion.'
+  }
+
+  t_tamper_payload -> FDS.apis 'Alters request/response data'
+  t_tamper_files -> BIG.FTPS 'Modifies CSV/XML files before Data Import'
+  t_tamper_files -> FDS.dataintegration.dataimport 'Injects malformed data'
+
+  //Repudiation
+  t_repudiation_user = threat 'Repudiation: User Actions' {
+    description 'Users deny having approved duties or timesheets.'
+  }
+  t_repudiation_admin = threat 'Repudiation: Admin Changes' {
+    description 'Admins deny configuration or security‑relevant changes.'
+  }
+
+  t_repudiation_user -> FDS.frontend.timesheet 'Approvals without sufficient audit trail'
+  t_repudiation_user -> FDS.frontend.approvals 'Duty approvals not fully logged'
+  t_repudiation_admin -> FDS.apis.actionLog 'Insufficient admin activity logging'
+
+  //Information Disclosure
+  t_info_pii = threat 'Information Disclosure: PII & HR Data' {
+    description 'Exposure of personal and HR data from FDS DB and staging.'
+  }
+  t_info_integration = threat 'Information Disclosure: Integration Data' {
+    description 'Exposure of data in transit via MQ/FTPS/Data Platform.'
+  }
+
+   t_info_pii -> FDS.databases.FDSDB 'Unauthorised read access'
+  t_info_pii -> FDS.databases.StagingDB 'Staging data exposed'
+  t_info_integration -> BIG.MQ 'Sniffing messages in transit'
+  t_info_integration -> BIG.FTPS 'Intercepting files in transit'
+  t_info_integration -> DataPlatform 'Over‑permissive access to reporting data'
+
+  //Denial of Service
+  t_dos_frontend = threat 'DoS: Frontend & APIs' {
+    description 'Overwhelming FDS frontend and APIs with traffic.'
+  }
+  t_dos_integration = threat 'DoS: Integration Channels' {
+    description 'Flooding MQ/FTPS to disrupt data flows.'
+  }
+
+  t_dos_frontend -> FDS.frontend 'High volume requests'
+  t_dos_frontend -> FDS.apis 'API flooding / resource exhaustion'
+  t_dos_integration -> BIG.MQ 'Message flooding'
+  t_dos_integration -> BIG.FTPS 'Bulk file uploads'
+
+  //Elevation of Privilege
+  t_eop_app = threat 'Elevation of Privilege: Application' {
+    description 'Exploiting application flaws to gain higher privileges.'
+  }
+  t_eop_db = threat 'Elevation of Privilege: Database' {
+    description 'Abusing DB permissions to bypass application controls.'
+  }
+
+  t_eop_app -> FDS.backend 'Abuses missing authorisation checks'
+  t_eop_app -> FDS.apis 'Bypasses role checks at API layer'
+  t_eop_db -> FDS.databases.FDSDB 'Direct DB access with over‑privileged accounts'
+
+  // Threat modelling (optional)
+  threat_sql = threat 'SQL Injection'
+  threat_replay = threat 'Token Replay Attack'
+  threat_phishing = threat 'Phishing Attack'
+
+  threat_sql -> FDS.apis 'Attempts malicious payloads'
+  threat_replay -> iam 'Attempts token reuse'
+  threat_phishing -> COM 'Targets privileged users'
+
+  // --- Spoofing Mitigations ---
+  waf -> t_spoof_user 'Blocks credential stuffing'
+  apim_policies -> t_spoof_user 'JWT validation'
+  rbac -> t_spoof_user 'Least privilege'
+  mq_auth -> t_spoof_service 'Service identity validation'
+  // --- Identity & Access Management ---
+  iam = securityService 'Identity & Access Management' {
+    description 'Centralised authentication and authorisation for FDS users'
+    technology 'Azure AD / OIDC'
+  }
+
+  // --- Tampering Mitigations ---
+  tls -> t_tamper_payload 'Encrypts API traffic'
+  apim_policies -> t_tamper_payload 'Schema validation'
+  ftps_hardening -> t_tamper_files 'Checksums & secure transfer'
+  input_validation -> t_tamper_payload 'Rejects malformed data'
+
+  // --- Repudiation Mitigations ---
+  audit_logging -> t_repudiation_user 'Immutable logs'
+  audit_logging -> t_repudiation_admin 'Admin activity logging'
+  siem_monitoring -> t_repudiation_admin 'Alerting on suspicious actions'
+
+  // --- Information Disclosure Mitigations ---
+  tls -> t_info_integration 'Encrypts data in transit'
+  encryption_at_rest -> t_info_pii 'Protects DB contents'
+  keyvault -> t_info_pii 'Protects credentials'
+  rbac -> t_info_pii 'Restricts DB access'
+
+  // --- DoS Mitigations ---
+  waf -> t_dos_frontend 'Blocks volumetric attacks'
+  apim_policies -> t_dos_frontend 'Rate limiting'
+  siem_monitoring -> t_dos_integration 'Detects MQ flooding'
+
+  // --- Elevation of Privilege Mitigations ---
+  rbac -> t_eop_app 'Restricts backend privileges'
+  input_validation -> t_eop_app 'Prevents injection'
+  keyvault -> t_eop_db 'Protects DB credentials'
+  encryption_at_rest -> t_eop_db 'Protects DB files'
+}
+
+views {
+  view dfd_stride_mitigations {
+    title 'DFD + STRIDE + Mitigations'
+
+    // Data flow components
+    include barcodescanner, PSP, M5, Winpak
+    include FDS.dataintegration //.dataimport
+    include FDS.databases //.StagingDB
+    //include FDS.databases.FDSDB
+    include FDS.backend //.*
+    include FDS.apis  //.*
+    include FDS.frontend  //.*
+    include BIG.MQ, BIG.FTPS
+
+    include fdsBoundary, dataBoundary, externalBoundary
+    include t_dos_frontend, t_dos_integration, t_eop_app, t_eop_db, t_info_integration, t_info_pii
+    include t_repudiation_admin, t_repudiation_user, t_spoof_service, t_spoof_user, t_tamper_files, t_tamper_payload
+
+    // Threats
+    include threat_phishing, threat_replay, threat_sql
+
+    // Mitigations
+    include waf, apim_policies, tls, encryption_at_rest
+    include rbac, audit_logging, siem_monitoring, iam, COM
+    include keyvault, input_validation, mq_auth, ftps_hardening
+    include DataPlatform
+    
+    // Styling
+    style threat_phishing, threat_replay, threat_sql {
+      color red
+      shape rectangle
+      opacity 80%
+    }
+
+    style fdsBoundary, dataBoundary, externalBoundary{
+      color gray
+      shape rectangle
+      opacity 80%
+    }
+    
+    style waf, apim_policies, tls, encryption_at_rest, rbac, audit_logging, siem_monitoring, keyvault, input_validation, mq_auth, ftps_hardening {
+      color sky
+      shape document
+      icon azure:security
+      iconColor red
+      opacity 70%
+    }
+    style t_dos_frontend, t_dos_integration, t_eop_app, t_eop_db, t_info_integration,
+          t_info_pii, t_repudiation_admin, t_repudiation_user, t_spoof_service, t_spoof_user, t_tamper_files, t_tamper_payload {
+            color amber
+            shape rectangle
+            icon ../icons/cybersecurity-threats.png
+            border solid
+            opacity 50%
+    }
+  }
+}
+*/

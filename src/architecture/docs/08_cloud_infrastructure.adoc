@@ -1,0 +1,543 @@
+== Cloud Architecture
+
+_Cloud Infrastructure section should contain cloud architecture diagram highlighting network topology, subnet, firewalls and cloud services used by the architecture. It should also provide information around high availability, regions, subscriptions, SKUs, Network Security Groups, NSG Rules, Firewalls, Cloud patterns and Cost optimization_
+
+*Availability NFR: #This needs to be considered when detailing the
+Regional/AZ placement#*
+
+[width="99%",cols="13%,77%,10%",options="header",]
+|===
+|*NFRID* |*Requirement Description* |*Status*
+|NFAV001 a|
+The FDS solution shall be available for use and supported 24 hours a
+day, 7 days a week, 365 days a year in adherence with the technical
+design principles and standards applicable to Service Criticality Level
+1.
+
+As a mission-critical system supporting the payment of Variable Pay
+Hours(over time), unplanned unavailability is not acceptable, and any
+failure must be recovered within a maximum Recovery Time Objective of 24
+hours(TBC with service).
+
+The solution may only be taken offline outside of this commitment during
+a planned maintenance window, agreed in advance with the Application
+Service Manager, who shall notify the user community prior to any
+scheduled downtime.
+
+|Approved
+|===
+
+=== Regions
+
+TIP: Capture the Azure regions used for the solution.
+
+[width="100%",cols="35%,15%,20%,10%,10%,10%",options="header",]
+|===
+|Region |Primary |Secondary 3+|Availability Zones
+| | | |AZ1 |AZ2 |AZ3
+|North Europe ^|Yes ^| ^| ^| ^|
+|West Europe ^| ^| ^| ^| ^|
+|UK South ^| ^| ^| ^| ^|
+|Germany West Central ^|Yes ^| ^|Yes ^|Yes ^|Yes
+|Sweden Central ^| ^|Yes ^|Yes ^|Yes ^|Yes
+|===
+
+{empty} +
+
+==== Rationale (latency, regulatory, capacity constraints)
+
+* Capacity constraints across the North Europe and West Europe regions
+are currently impeding the provisioning of the SQL Managed Instance
+(MI), rendering deployment unfeasible in these locations.
+* The Dev, SIT, and QA environments have already been instantiated in
+the North Europe region and will remain there, with no further
+relocation envisaged.
+* In alignment with Microsoft's recommendation, the Pre-Production and
+Production environments will be migrated to Germany West Central
+(designated as the Primary region) and Sweden Central (configured as the
+Warm Standby for Disaster Recovery).
+
+=== Availability Zones
+
+TIP: Define high availability architecture.
+
+* Services deployed across zones
+* Zone pinning requirements (if any)
+* Zonal vs zone-redundant SKUs
+
+.High Availability Architecture
+====
+*Example:*
+
+* Region supports 3 AZs
+* Workloads deployed Zone-Redundant (ZRS / AZ-aware)
+====
+
+* Region: FDS Prod and Prod Application are deployed in the Germany West
+and Sweden Central regions, each supporting 3 AZs.
+* App Service plans
+
+=== Subscriptions (Naming & Structure)
+
+TIP: Aligned to the *subscription factory model* from your HLD artefact
+
+*Details to include:*
+
+* Subscription names (fully qualified)
+* Environment split:
+** Prod
+** Pre-Prod
+** Non-Prod (Dev/Test)
+* Platform vs Workload subscriptions
+* Naming standard compliance
+
+[width="100%",cols="15%,20%,40%,25%",options="header",]
+|===
+^|*Env* ^|*Subscription Name* ^|*Subscription ID* ^|*Type*
+|Dev |rm-artfds-slz-d-sub-01 |039fe12a-dcea-4087-9431-c2ed92e61917 |FDS
+Workload Subscription
+
+|QA |rm-artfds-slz-n-sub-01 |23b1a3cd-0e03-4852-aa04-bad88fd77c6b |FDS
+Workload Subscription
+
+|SIT |rm-artfds-slz-a-sub-01 |5c247745-b158-4c53-9cf2-13d52dd46ad9 |FDS
+Workload Subscription
+
+|PreProd |rm-artfds-slz-v-sub-01  |23a01b16-0f01-46b3-aad0-d2e95c1441e4
+|FDS Workload Subscription
+
+|Prod |rm-artfds-slz-p-sub-01 |1f7b29ec-d1e9-40fc-a861-39d60ce2949b |FDS
+Workload Subscription
+|===
+
+https://andotce.royalmailgroup.com/spaces/RDH/pages/454309842/IA-TS24+Cloud+Resource+Naming+Standard[*Standards*]
+
+
+=== SKU’S Used (Per Region)
+
+TIP: Define all critical service SKUs per region.
+
+*Details to include:*
+
+* Compute SKUs (VM sizes / VMSS)
+* Storage SKUs (Standard / Premium / ZRS)
+* PaaS SKUs (if applicable)
+
+.SKU Example
+====
+*Example:*
+
+[width="100%",cols="24%,26%,25%,25%",options="header",]
+|===
+|*ENVIRONMENT* |*COMPONENT* |*REGION* |*SKU*
+|NPD |ExpressRoute GW |UK South |ErGw3AZ
+|PPD |Firewall |UK South |Premium
+|PRD |VM |UK South |D4s v5
+|===
+====
+
+[width="100%",cols="8%,33%,22%,17%,20%",options="header",]
+|===
+|*ENV* |*Name* |*Component* |*Region* |*SKU*
+|SIT |rm-ne-artfds-sit-asp-01 |App Service plan |northeurope |P1v3
+(PremiumV3)
+
+|SIT |rm-ne-artfds-sit-asp-02 |App Service plan |northeurope |P2v3
+(PremiumV3)
+
+|SIT |rm-ne-artfds-sit-funcasp-01 |App Service plan |northeurope |EP1
+(ElasticPremium)
+
+|SIT |rm-ne-artfds-sit-logicasp-01 |App Service plan |northeurope |WS1
+(WorkflowStandard)
+
+|SIT |rm-ne-artfds-sit-appgw |Application gateway |northeurope
+|WAF++_++v2
+
+|SIT |rm-ne-artfds-sit-redis01 |Azure Cache for Redis |northeurope
+|Premium
+
+|SIT |disk1 |Disk |northeurope |StandardSSD++_++LRS (Standard)
+
+|SIT |disk2 |Disk |northeurope |StandardSSD++_++LRS (Standard)
+
+|SIT |rm-ne-artfds-sit-vm01-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|SIT |rm-ne-artfds-sit-vm02-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|SIT |rm-ne-artfds-sit-vm03-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|SIT
+|rm-nefdssitAgnt01++_++OsDisk++_++1++_++5806e1fabcfd4a2ead4024fcb6640f81
+|Disk |northeurope |Premium++_++LRS (Premium)
+
+|SIT |rm-ne-artfds-sit-evnthubns-01 |Event Hubs Namespace |northeurope
+|Standard (Standard)
+
+|SIT |rm-ne-artfds-sit-kv-01 |Key vault |northeurope |standard
+
+|SIT |rm-ne-artfds-sit-law-workspace01 |Log Analytics workspace
+|northeurope |PerGB2018
+
+|SIT |rm-ne-artfds-sit-appgw-pip |Public IP address |northeurope
+|Standard (Regional)
+
+|SIT |rmg-ne-artfds-sit-sqlmi-01 |SQL managed instance |northeurope
+|GP++_++Gen5 (GeneralPurpose)
+
+|SIT |rmneartfdsagncshftdt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdsagnctmshrpt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdsarplan01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|SIT |rmneartfdsarrepo01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|SIT |rmneartfdsfleet01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|SIT |rmneartfdslegacyrt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdsmd01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|SIT |rmneartfdsmdmdata01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdsovrtmrpt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdsrcstodp01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdsrdmref01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|SIT |rmneartfdssitsabkend01 |Storage account |northeurope
+|Standard++_++RAGRS (Standard)
+
+|SIT |rmneartfdssitsacustm01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdssitsafn01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdssitsalg01 |Storage account |northeurope
+|Standard++_++ZRS (Standard)
+
+|SIT |rmneartfdssitsasql01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|SIT |rmneartfdssitwinpak01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rm-ne-artfds-npd-asp-01 |App Service plan |northeurope |P1v3
+(PremiumV3)
+
+|QA |rm-ne-artfds-npd-asp-02 |App Service plan |northeurope |P2v3
+(PremiumV3)
+
+|QA |rm-ne-artfds-npd-funcasp-01 |App Service plan |northeurope |EP1
+(ElasticPremium)
+
+|QA |rm-ne-artfds-npd-logicasp-01 |App Service plan |northeurope |WS1
+(WorkflowStandard)
+
+|QA |rm-ne-artfds-npd-appgw |Application gateway |northeurope
+|WAF++_++v2
+
+|QA |data |Disk |northeurope |Premium++_++LRS (Premium)
+
+|QA |data1 |Disk |northeurope |Premium++_++LRS (Premium)
+
+|QA |data2 |Disk |northeurope |StandardSSD++_++LRS (Standard)
+
+|QA |rm-ne-artfds-npd-vm01-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|QA |rm-ne-artfds-npd-vm2-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|QA |rm-ne-artfds-npd-vm3-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|QA |rm-ne-artfds-npd-vm4-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|QA |rm-ne-artfds-npd-evnthubns-01 |Event Hubs Namespace |northeurope
+|Standard (Standard)
+
+|QA |rm-ne-artfds-npd-kv-01 |Key vault |northeurope |standard
+
+|QA |rm-ne-artfds-npd-law-workspace01 |Log Analytics workspace
+|northeurope |PerGB2018
+
+|QA |rm-ne-artfds-npd-appgw-pip |Public IP address |northeurope
+|Standard (Regional)
+
+|QA |vault-mkmjc9ro |Recovery Services vault |northeurope |RS0
+(Standard)
+
+|QA |rmg-ne-artfds-npd-sqlmi1-01 |SQL managed instance |northeurope
+|GP++_++Gen5 (GeneralPurpose)
+
+|QA |rmneartfdnpdsovrtmrpt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdagshftdt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdagtmshrp01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdarplan01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdarrepo01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdfleet01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdlegacyrt01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdmd01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|QA |rmneartfdsnpdmdmdata01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdrcstodp01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdrdmref01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdsafn01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|QA |rmneartfdsnpdsalg01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|QA |rmneartfdsnpdsasql01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |rmneartfdsnpdsawa01 |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|QA |rmneartfdsnpdwinpak01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |stdevtestmigration3434 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|QA |sttfbackendulubfl |Storage account |northeurope |Standard++_++LRS
+(Standard)
+
+|QA |SecurityInsights(rm-ne-artfds-npd-law-workspace01)
+|microsoft.operationsmanagement/solutions |northeurope |Unified
+
+|Dev |rm-ne-artfds-dev-asp-01 |App Service plan |northeurope |P1v3
+(PremiumV3)
+
+|Dev |rm-ne-artfds-dev-asp-02 |App Service plan |northeurope |P2v3
+(PremiumV3)
+
+|Dev |rm-ne-artfds-dev-funcasp-01 |App Service plan |northeurope |EP1
+(ElasticPremium)
+
+|Dev |rm-ne-artfds-dev-logicasp-01 |App Service plan |northeurope |WS1
+(WorkflowStandard)
+
+|Dev |rm-ne-artfds-dev-appgw |Application gateway |northeurope
+|WAF++_++v2
+
+|Dev |rm-ne-artfds-dev-redis01 |Azure Cache for Redis |northeurope
+|Premium
+
+|Dev |rm-ne-artfds-dev-vm01-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|Dev |rm-ne-artfds-dev-vm02-osdisk |Disk |northeurope |Premium++_++LRS
+(Premium)
+
+|Dev
+|rm-nefdsdevAgnt01++_++OsDisk++_++1++_++85b9c256dacd4cdf97cf72aeda2d411d
+|Disk |northeurope |Premium++_++LRS (Premium)
+
+|Dev |rm-ne-artfds-dev-evnthubns-01 |Event Hubs Namespace |northeurope
+|Standard (Standard)
+
+|Dev |rm-ne-artfds-dev-kv-01 |Key vault |northeurope |standard
+
+|Dev |rm-ne-artfds-dev-law-workspace01 |Log Analytics workspace
+|northeurope |PerGB2018
+
+|Dev |rm-ne-artfds-dev-appgw-pip |Public IP address |northeurope
+|Standard (Regional)
+
+|Dev |rmg-ne-artfds-dev-sqlmi-01 |SQL managed instance |northeurope
+|GP++_++Gen5 (GeneralPurpose)
+
+|Dev |rmneartfdsdevsabkend01 |Storage account |northeurope
+|Standard++_++RAGRS (Standard)
+
+|Dev |rmneartfdsdevsacustm01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|Dev |rmneartfdsdevsafn01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|Dev |rmneartfdsdevsalg01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|Dev |rmneartfdsdevsasql01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|Dev |rmneartfdsdevsawa01 |Storage account |northeurope
+|Standard++_++LRS (Standard)
+
+|Dev |SecurityInsights(rm-ne-artfds-dev-law-workspace01)
+|microsoft.operationsmanagement/solutions |northeurope |Unified
+|===
+
+=== Network Security Group (NSG) Rules
+
+TIP: Already aligned to your HLD approach, where NSGs control *spoke traffic*
+
+*Details to capture:*
+
+* Source → Destination
+* Port / Protocol
+* Action (Allow/Deny)
+* Priority
+* Purpose
+
+
+.NSG Rules
+====
+*Example table:*
+
+[width="88%",cols="28%,16%,20%,8%,11%,17%",options="header",]
+|===
+|*RULE NAME* |*SOURCE* |*DESTINATION* |*PORT* |*ACTION* |*PURPOSE*
+|Allow-App-To-DB |App Subnet |DB Subnet |1433 |Allow |SQL access
+|Allow-App-To-Blob |App Subnet |Storage Subnet |443 |Allow |Blob Access
+|===
+====
+
+
+IMPORTANT: If traffic stays *inside the VNet* → *NSG rules must be defined*
+
+IMPORTANT: If traffic leaves the VNet → *NSGs are not the primary control* (handled via hub firewall(s))
+
+[width="92%",cols="39%,21%,40%",options="header",]
+|===
+|*TRAFFIC TYPE* |*NSG REQUIRED* |*NOTE*
+|Subnet → Subnet (same VNet) |✅ Yes |Primary control
+|VNet → External / Internet |❌ No |Controlled by firewall/routing
+|VNet → Other VNet |❌ No |Controlled via peering {plus} firewall
+|===
+
+=== Firewall Rules (North-South / East-West)
+
+*Details to include:*
+
+* DNAT / SNAT rules
+* Application rules (FQDN-based)
+* Network rules (IP-based)
+* Inbound vs outbound distinction
+
+.Firewall Rules
+====
+*Example:*
+
+[width="61%",cols="25%,23%,23%,12%,17%",options="header",]
+|===
+|*RULE TYPE* |*FROM* |*TO* |*PORT* |*ACTION*
+|DNAT |Internet |Web Tier |443 |Allow
+|Network |App Subnet |External API |443 |Allow
+|===
+====
+
+=== Network / Subnet Design
+
+IMPORTANT: Critical for addressing your “network/subnet size”.
+
+*Details to include:*
+
+* VNET address space
+* Subnet segmentation
+* CIDR sizing
+* Reserved IP strategy
+* Growth headroom
+
+.Network / Subnet
+====
+*Example:*
+
+[width="45%",cols="56%,16%,28%",options="header",]
+|===
+|*SUBNET* |*CIDR* |*PURPOSE*
+|AzureFirewallSubnet |/26 |Firewall
+|AppSubnet |/24 |App tier
+|DBSubnet |/24 |Database
+|===
+====
+
+
+=== Patterns / Blueprints / Catalogue of Whitelisted Azure Products/Services
+
+Pattern Consumption Table
+
+IMPORTANT: The architect MUST confirm coverage across all domains:
+
+[width="57%",cols="27%,57%,16%",options="header",]
+|===
+|*DOMAIN* |*PATTERN IDENTIFIED (Y/N)* |*NOTES*
+|*Networking* | |
+|*Security* | |
+|*Compute* | |
+|*Data* | |
+|*Integration* | |
+|===
+
+https://andotce.royalmailgroup.com/pages/viewpage.action?pageId=504201390&spaceKey=HCI&title=Whitelisted%2BAzure%2BResource%2BTypes%2BStatus%2B-%2BSLZ[*Catalogue*]
+
+=== Cost Optimisation and FinOps Alignment*
+
+* Use of reserved capacity (where applicable)
+* Right-sizing of compute resources
+* Use of PaaS over IaaS where appropriate
+* Separation of environments for cost control
+* Costs MUST be derived from the Azure Calculator
+* DR costs MUST be included where applicable
+
+*Cost Breakdown Table*
+
+.Cost Breakdown
+====
+*Example:*
+
+[width="100%",cols="19%,13%,15%,11%,18%,24%",options="header",]
+|===
+|*COMPONENT* |*SERVICE* |*SKU* |*REGION* |*EST. MONTHLY COST (£)*
+|*JUSTIFICATION*
+|*Compute* |*VMSS* |*D4s v5* |*UK South* | |*Supports app tier scaling*
+
+|*Security* |*Azure Firewall* |*Premium* |*UK South* | |*Required for
+central control*
+
+|*Data* |*Azure SQL* |*Business Critical* |*UK South* | |
+|===
+
+====

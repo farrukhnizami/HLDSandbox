@@ -1,0 +1,64 @@
+== Solution Strategy
+
+*Contents*
+
+_A short summary and explanation of the fundamental decisions and
+solution strategies, that shape system architecture. It includes_
+
+* technology decisions
+* decisions about the top-level decomposition of the system, e.g. usage
+of an architectural pattern or design pattern
+* decisions on how to achieve key quality goals
+* relevant organizational decisions, e.g. selecting a development
+process or delegating certain tasks to third parties.
+
+*Motivation*
+
+_These decisions form the cornerstones for your architecture. They are
+the foundation for many other detailed decisions or implementation
+rules._
+
+*Form*
+
+_Keep the explanations of such key decisions short._
+
+_Motivate what was decided and why it was decided that way, based upon
+problem statement, quality goals and key constraints. Refer to details
+in the following sections._
+
+*Further Information*
+
+_See_ https://docs.arc42.org/section-4/[Solution Strategy] _in the arc42
+documentation._
+
+*Royal Mail FDS - Processing Sites: Worked Example*
+
+*The FDS Processing Sites architecture is governed by five fundamental decisions:*
+
+=== Reuse, do not re-platform
+
+FDS is extended, not rebuilt. Processing capabilities are added as additional bounded contexts within the existing FDS solution, sharing identity, audit, integration, master data and storage layers. This delivers cost containment and consistency across Delivery and Processing Units.
+
+=== Data-driven planning
+
+Duty masters (codes, work-area splits, rotation patterns) are owned by MDS and pulled into FDS on a monthly bulk cadence with on-demand deltas. FDS authoritatively derives plans from this master data; any operational variance is captured as a tracked, auditable adjustment rather than a redefinition of the duty. Additionally, FDS allows ad hoc overtime planning.
+
+=== Plan vs. scan reconciliation as the canonical pay-validation pattern
+
+Pay-affecting decisions (OT and Schedule-Attendance approval) cross-reference the approved plan against PDA and Console scan events. The plan is the authoritative reference for downstream timesheet validation; manual override is permitted but always logged.
+
+=== Event-driven, API-led integration
+
+High-volume, low-latency flows (scan events and PSP OT flow) use the IBM MQ. Lower-volume flows (Joined up and People app) use synchronous APIs through the BIG API gateway. Bulk analytics flows to the Data Platform use the Batch data export. No point-to-point integration is introduced.
+
+*How do these decisions satisfy the quality goals*
+
+[width="100%",cols="30%,70%",options="header",]
+|===
+|*Quality Goal* |*Strategy that delivers it*
+|Auditability & Traceability |Immutable event-sourced audit log on every approval/rejection/adjustment of OT Plan and timesheet
+|Pay Accuracy |Plan-vs-scan reconciliation (4.3) is the single approved path to pay; manual overrides logged.
+|Operational Availability |Reuse of the proven FDS platform (4.1); horizontally scalable web/app tier
+|Integration Reliability |Event-driven {plus} API-led pattern with at-least-once semantics,
+|Usability |Reuse (4.1) of an established UX, with Processing-specific screens layered on familiar navigation.
+|===

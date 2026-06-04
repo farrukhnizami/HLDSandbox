@@ -1,0 +1,90 @@
+model {
+
+  // External data sources
+  barcodescanner -> FDS.dataintegration.dataimport 'Attendance Data'
+  PSP -> FDS.dataintegration.dataimport 'Absences, HR Master Data, Overtime Processing Status'
+  M5 -> FDS.dataintegration.dataimport 'Fleet Data'
+  Winpak -> FDS.dataintegration.dataimport 'ID Card Data'
+  JoinedUp -> FDS.apis.agencyservice 'Agency Worker Data'
+  FDS.apis.agencyservice -> JoinedUp 'Approved Agency Shifts'
+
+  // Data ingestion
+  FDS.dataintegration.dataimport -> FDS.databases.StagingDB 'Raw Imported Data'
+  FDS.dataintegration.dataimport -> FDS.databases.FDSDB 'Validated Data'
+
+  // Data processing
+  FDS.databases.FDSDB -> FDS.backend.dutymanager 'Duty Data'
+  FDS.databases.FDSDB -> FDS.backend.timesheet 'Timesheet Data'
+  FDS.databases.FDSDB -> FDS.backend.attendanceplan 'Attendance Plan Data'
+
+  // Backend to API flows
+  FDS.backend.dutymanager -> FDS.apis.dutymanagerservice 'Duty Operations'
+  FDS.backend.timesheet -> FDS.apis.timesheetservice 'Timesheet Operations'
+  FDS.backend.attendanceplan -> FDS.apis.attendanceplanservice 'Attendance Plan Operations'
+
+  // API to frontend flows
+  FDS.apis.dutymanagerservice -> FDS.frontend.dutymanager 'Duty Data'
+  FDS.apis.timesheetservice -> FDS.frontend.timesheet 'Timesheet Data'
+  FDS.apis.attendanceplanservice -> FDS.frontend.attendanceplan 'Attendance Plan Data'
+  FDS.apis.approvalworkflowservice -> FDS.frontend.approvals 'Approval Workflow Data'
+
+  // User interactions
+  OPG -> FDS.frontend 'Duty, Attendance'
+  COM -> FDS.frontend 'Overtime & SA Approvals, Attendance Plans'
+  PSM -> FDS.frontend 'Duty Management'
+  DeliveryAssurance -> FDS.frontend 'Approve Duty Revisions'
+
+  // Outbound integrations
+  FDS.dataintegration.dataexport -> BIG.MQ 'Work Schedules, Approved Overtime & SA Shifts'
+  FDS.dataintegration.dataexport -> BIG.FTPS 'Exported Data Files'
+  FDS.dataintegration.dataexport -> DataPlatform 'Reporting Data'
+  FDS.apis.email -> email-provider 'Approval Emails'
+}
+
+views {
+  view dfd_level0 {
+    title 'DFD Level 0 – FDS Data Flow Overview'
+    include OPG, COM, PSM, DeliveryAssurance
+    include barcodescanner, PSP, M5, Winpak, JoinedUp
+    include FDS
+    include BIG, DataPlatform, email-provider
+  }
+}
+
+views {
+  view dfd_ingestion {
+    title 'DFD Level 1 – Data Ingestion'
+    include barcodescanner, PSP, M5, Winpak
+    include FDS.dataintegration.dataimport
+    include FDS.databases.StagingDB
+    include FDS.databases.FDSDB
+  }
+}
+
+views {
+  view dfd_processing {
+    title 'DFD Level 1 – Backend Processing'
+    include FDS.databases.FDSDB
+    include FDS.backend.*
+    include FDS.apis.*
+  }
+}
+
+views {
+  view dfd_user_interaction {
+    title 'DFD Level 1 – User Interaction'
+    include OPG, COM, PSM, DeliveryAssurance
+    include FDS.frontend.*
+    include FDS.apis.*
+  }
+}
+
+views {
+  view dfd_outbound {
+    title 'DFD Level 1 – Outbound Integrations'
+    include FDS.dataintegration.dataexport
+    include BIG.MQ, BIG.FTPS, DataPlatform
+    include email-provider, FDS.apis.email, PSP, JoinedUp, FDS.apis.agencyservice
+  }
+}
+

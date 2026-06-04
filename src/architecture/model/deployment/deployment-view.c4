@@ -1,0 +1,22 @@
+views {
+    deployment view azuredeployment {
+        title 'Azure Production Deployment'
+        include
+            user,
+            prod,
+            prod.*,
+            prod.**,
+            prod.appservices.*,
+            prod.databases
+
+        exclude -> FDS.backend,
+                -> FDS.apis
+        style prod.frontend {
+            multiple true
+        }
+        style prod.databases {
+            multiple true
+        }
+        autoLayout TopBottom
+    }
+}

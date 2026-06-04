@@ -1,0 +1,966 @@
+== Security Architecture
+
+*Content*
+
+_Software security architecture is the foundational design of a system that embeds defenses directly into the code and infrastructure, ensuring resistance against malicious attacks. It is a critical necessity to proactively mitigate vulnerabilities, prevent catastrophic data breaches, and maintain customer trust_
+
+_A robust software security architecture is essential for several key reasons:_
+
+* *Proactive Vulnerability Mitigation*: _By designing security into the software development life cycle (SDLC) from the ground up, you can prevent up to 80% of security problems before the code is even written. It replaces reactive, "afterthought" patching with built-in resilience._
+* *Minimizing Breach Impact*: _A solid architecture ensures that if a component is breached, the damage is isolated. Principles like "least privilege" and strict access controls prevent an attacker from escalating their access across the entire system._
+* *Protecting Critical Assets*: _It establishes standardized encryption, authentication, and authorization checkpoints to safeguard sensitive user data, intellectual property, and financial systems._
+* *Ensuring Compliance*: _For highly regulated industries like finance, healthcare, and e-commerce, a structured architectural framework is required to meet strict legal regulations and data protection laws_
+
+_It should contain the following:_
+
+. Cyber Architecture ARB Survey
+. Data Flow Diagram with STRIDE Threat Model and Mitigation
+. Identity & Access Management (IAM)
+. Data Categorization
+. Usage of AI ([.green]#If Applicable#)
+. Security RAID Log
+. Application Business Criticality Rating
+. Quantum Cryptography Secure [.red]#(TBC)#
+. Active Directory Tier Level [.red]#(TBC)#
+. Privileged Access Requirements (CyberArk)
+. User Provisioning Requirement (SailPoint)
+. Key Management Services Requirements
+
+*Motivation*
+
+_The primary rationale for software security architecture is to proactively embed protective measures into a system, rather than treating them as an afterthought. It acts as a foundational blueprint that minimizes the attack surface, prevents costly architectural reworks, and ensures business-wide compliance._
+
+_The fundamental drivers and objectives of this architecture include:_
+
+. *The Secure by Design Imperative*
+.. *Shift-Left Approach*: _Embedding security during the initial planning and design phases is exponentially more cost-effective than remediating vulnerabilities found in production._
+.. *Complexity Management*: _Modern software relies heavily on distributed systems and APIs. Security architecture provides consistent, unified controls rather than fragmented, bolt-on solutions that leave systems fragile._
+. *Core Protection Objectives (CIA Triad)*
+.. *Confidentiality*: _Ensures that sensitive data is protected from unauthorized access, leveraging end-to-end encryption and robust identity access management (IAM)._
+.. *Integrity*: _Maintains the accuracy and trustworthiness of data by implementing strict authorization protocols and data classification policies._
+.. *Availability*: _Ensures services and data remain accessible, even amidst malicious disruptions or unintended software failures_
+. *Structural Capabilities*
+.. *Segregation & Segmentation*: _Hybrid and cloud environments require independent building blocks so that a compromise in one service does not cascade through the entire organization._
+.. *Zero-Trust Frameworks*: _Assumes no user or service is trusted by default. Architecture mandates continuous validation, authentication, and authorization._
+. *Business Enablement and Risk Management*
+.. *Compliance*: _Aligns system designs with data privacy and cybersecurity laws, such as GDPR and other industry frameworks._
+.. *Cost Reduction*: _Minimizes long-term expenses by preventing security breaches, reducing expensive downtime, and streamlining incident response._
+
+*Form*
+
+_Security Architecture can be documented through diagrams, text and tables. This section should contain at least a Level-1 DFD along with a STRIDE Threat Model with clearly defined threat boundaries. RAID Logs should be in tabular format._
+
+=== Cyber Architecture Standards and NFRs
+
+.Details
+[width=60%,options="header"]
+|===
+|*Title*    |*Response*
+|All Royal Mail Cyber Architecture Standards can be found here: +
+https://intranet.royalmailgroup.com/sites/ThinkSecure/ThinkCyber/SitePages/Welcome.aspx[Architecture Standards] +
+Please confirm that you have reviewed these standards before completing the survey. |Yes/No
+|TDA Submission Name    |
+|TDA Approval Date Required |
+|Cyber Advisor Name (A Cyber Advisor is required for every project going through TDA)   |
+|Does this TDA submission introduce any AI? Please detail the requirement.  |
+|Data Privacy Impact Assessment Reference Number (if required)  |
+|===
+
+.Cyber Architecture Standards Attestation
+[width=100%,cols="40%,10%,50%"",options="header"]
+|===
+|*Survey Question*    |*Response* [.red]#*(Yes/No/NA)*#          |*Rationale* [.red]#*(If No or NA)*#
+|TDA Q1 - Does the solution make use of cloud-based services and ensure that they are appropriately secured and managed inline with ISS-001 - Cloud Computing Security Standard?    |       |
+|TDA Q2 - Does the solution transfer and store data, if so have you established and documented a minimum acceptable level of cryptographic algorithms and protocols for transmission and storage of Royal Mail data inline with ISS-002 - Cryptography Standard?    |       |
+|TDA Q3 - Has the solution been designed with the key objectives of protection of data and disaster recovery/business continuity with the ability to recover systems and recent live data in the event of a partial or total loss of a service aligned to ISS-003 - Data Backup and Restoration Standard?   |       |
+|TDA Q4 -Does the solution ensure that RM assets are appropriately managed and protected from information security breaches inline with ISS-004 - Asset Management Standard?(An Information Asset is a definable piece of information, stored or processed in any manner which is recognized as valuable to the Royal Mail Group. A system that processes that information is also an asset.)   |       |
+|TDA Q5 - Does the solution required and meet the classifying of information assets as stated in ISS-005 - Information Classification Standard?     |       |
+|TDA Q6 - Has the solution/design assigned Data/System Impact Levels as stated in ISS-005 - Information Classification Standard?    |       |
+|TDA Q7 - Does the solution/design require and ensure that data is labelled accordingly as stated in ISS-005 - Information Classification Standard?     |       |
+|TDA Q 8 - Has the solution or design identified, assessed and provided a treatment plan and monitoring of any Tech and Cyber risk as detailed in ISS-007 - Risk Management Standard?   |       |
+|TDA Q9 - Has the solution implemented the identified requirements for the provisioning, secure usage, and management of company-provided mobile devices, specifically tablets and smartphones, through the use of Mobile Device Management (MDM) software aligned to ISS-008 - Mobile Security Standard?   |       |
+|TDA Q10 - Has the solution met the requirements to protect RMG data specifically confidential or strictly confidential data accessed or stored on mobile devices as outlined in ISS-008 - Mobile Security Standard?    |       |
+|TDA Q11 - Does the solution implement computer network solutions in accordance with the "Information Security requirements" specified in ISS-009 - Network Security Standard?      |       |
+|TDA Q12 - Has the project understood the procedures necessary to identify, assess, prioritise, and remediate vulnerabilities affecting Royal Mail Group (RMG) following the ISS-010 - Vulnerability Management Standard?(Including but not limited to operating systems, applications, cloud resources, web technologies, server, desktop, mobile device software, hardware, network devices and common coding vulnerabilities in software-development processes)      |       |
+|TDA Q13 - Has the solution/project reviewed and aligned to the security requirements for developing and using web services, whether in designing a solution, implementing a system or operating a system based on web services in line with ISS-011 - Web Services Security Standard   |       |
+|TDA Q14 - Does the solution or design implement endpoint solutions in accordance with requirements from Information Security and others; to describe system functionality and parameters necessary to fulfil security requirements; and to define key support processes as specified in ISS-012 - Endpoint Security Standard?      |       |
+|TDA Q15 - Does the solution or design meet the minimum standard to allow Royal Mail Group (RMG) to address Authentication related risks through the implementation of controls as specified in ISS-013 - Authentication Standard?      |       |
+|TDA Q16 - Does the solution need to authenticate non-RMG users and is this inline with ISS-013 - Authentication Standard?      |       |
+|TDA Q17 - Does the solution need to authenticate users from an RMG-managed user directory and does this follow the requirements in ISS-013 - Authentication Standard?      |       |
+|TDA Q18 - Does the proposed design/solution meet the security requirements to ensure that software development by/on behalf of Royal Mail Group (RMG) minimizes and prevents the risk/impact of information security following ISS-014 - Secure Product Development Standard       |       |
+|TDA Q19 - Does the design/solution follow the defined set of requirements for security testing providing confirmation that all RMG systems and processes are sufficiently resilient in line with RMG risk appetite, with all controls proven effective as outlined in ISS-015 - Cyber Security Testing Standard?       |       |
+|TDA Q20 - Have all individuals working on this design/project for Royal Mail Group Ltd, including employees, workers, self-employed contractors, consultants, and agency workers (referred to as “our people”) completed the required cybersecurity training and awareness defined in ISS-016 - Cyber Security Training and Awareness Standard?        |       |
+|TDA Q21 - Does the design/project follow the secure practices to manage secrets and cryptographic keys following ISS-017 - Secret & Key Management Standard alongside ISS-002 - Cryptography Standard which defines the acceptable cryptographic algorithms and protocols for the secure transmission and storage of data?     |       |
+|TDA Q22 - Has the design/project determined what software needs to be installed and minimum logging level for Syslog, Common Event Format (CEF) logs and Windows events to maintain visibility across the Royal Mail’s infrastructure. Application logs are based on use case and will be assessed by the Cyber Engineering team using requirements/tools available. i:e Data connector/Logic App etc in line with ISS-020 - SIEM System Monitoring Standard?      |       |
+|TDA Q23 - Does this design/project meet the requirements for Royal Mail Group (RMG) Cyber Threat Intelligence (CTI) programme and have these been aligned to ISS-023 - Threat Intelligence Standard?       |       |
+|===
+
+.Cyber Architecture Standards-Aligned NFRs
+[width="100%",cols="^5%,15%,31%,15%,^8%,^8%,^8%,^10%",options="header",]
+|===
+^|*ID* ^|*Category* ^|*Requirement* ^|*Standards Reference* ^|*SaaS*
+^|*PaaS* ^|*IaaS* ^|*OnPrem*
+^|2 |Access Reviews & Logging |Expose role and membership information in
+a way that central access review/governance tools can consume (e.g. via
+IdP groups or IGA). |ISS-013 - Authentication Standard 4.4.2 ^|Y ^|Y ^|Y
+^|Y
+
+^|3 |Access Reviews & Logging |Support periodic access reviews of
+privileged roles with exportable reports and clearly identifiable role
+owners. |POL-003 - Identity and Access Management Policy 4.9.2 ^|Y ^|Y
+^|Y ^|Y
+
+^|4 |Access Reviews & Logging |Log every access change (role assignment,
+elevation, delegation) with actor, subject, time, and action, and send
+to central logging. |ISS-009 - Network Security Standard 8.3.17 ^|Y ^|Y
+^|Y ^|Y
+
+^|5 |Access Reviews & Logging |Record and retain privileged
+administrative sessions (session recording/command logging) for
+high-tier systems, or implement compensating controls (detailed audit
+logs {plus} strong change control) where session recording is
+infeasible. |ISS-009 - Network Security Standard 10.1.9 ^|Y ^|Y ^|Y ^|Y
+
+^|6 |Account Lifecycle |Map application roles to IdP groups or
+attributes so that joiners, movers, and leavers are handled centrally;
+avoid manual creation of standard user accounts. |POL-003 - Identity and
+Access Management Policy 4.2.8 ^|Y ^|Y ^|Y ^|Y
+
+^|7 |Account Lifecycle |Ensure any local accounts that cannot be
+federated have an explicit owner, justification, and expiry date.
+|ISS-013 - Authentication Standard 4.1.8 ^|Y ^|Y ^|Y ^|Y
+
+^|8 |Account Lifecycle |Trigger deprovisioning of application accounts
+automatically when the identity is disabled in the IdP. |POL-003 -
+Identity and Access Management Policy 4.11.1 ^|Y ^|Y ^|Y ^|Y
+
+^|9 |Account Lifecycle |Prohibit shared credentials for human users; any
+unavoidable exceptions must have formal approval and monitoring.
+|ISS-013 - Authentication Standard 4.2.9 ^|Y ^|Y ^|Y ^|Y
+
+^|10 |Account Recovery & Self-Service |Delegate password reset, MFA
+reset, and account recovery to the central IdP; do not implement
+separate self-service flows. |ISS-013 - Authentication Standard 4.2.8
+^|Y ^|Y ^|Y ^|Y
+
+^|11 |Account Recovery & Self-Service |Where separate account unlock or
+recovery flows exist (e.g. local admin accounts), ensure they are
+strongly authenticated, logged, and tightly controlled. |POL-003 -
+Identity and Access Management Policy 4.10.9 ^|Y ^|Y ^|Y ^|Y
+
+^|12 |Applications (PaaS) |Ensure all managed runtimes (web apps,
+functions, containers, integration services) run on supported versions
+and define a cadence for runtime upgrades. |ISS-011 - Web Services
+Security Standard 4.7 | ^|Y ^|Y ^|Y
+
+^|13 |Applications (PaaS) |Instrument application code with structured
+logging, metrics, and traces and connect them to central monitoring and
+SIEM. |ISS-011 - Web Services Security Standard 3.10 | ^|Y ^|Y ^|Y
+
+^|14 |Applications (PaaS) |Configure platform features securely by
+disabling sample apps, management consoles, or remote debugging in
+production and locking down console endpoints. |ISS-011 - Web Services
+Security Standard 4.10 | ^|Y ^|Y ^|Y
+
+^|15 |Applications (PaaS) |Store application configuration in an
+approved configuration store and store secrets only in the central
+secrets manager/platform key vault; prohibit secrets in code, images, or
+plaintext environment variables and enforce detection (secret scanning)
+in CI/CD. |ISS-014 - Secure Product Development Standard 4.11 | ^|Y ^|Y
+^|Y
+
+^|16 |Applications (PaaS) |Enable PaaS threat protection features for
+sensitive services (e.g. DB threat detection, storage anomaly detection)
+and route alerts into central incident handling. |ISS-001 - Cloud
+Computing Standard 4.3.1 | ^|Y ^|Y ^|Y
+
+^|17 |Authentication Model |Rely on central IdP/SSO for MFA, password
+policy, and basic login security. |ISS-013 - Authentication Standard
+4.1.9 ^|Y ^|Y ^|Y ^|Y
+
+^|18 |Authentication Model |Use RMG-approved SSO/IdP for all human user
+authentication and do not implement a separate username/password store.
+|ISS-013 - Authentication Standard 4.1.9 ^|Y ^|Y ^|Y ^|Y
+
+^|19 |Authentication Model |Do not implement custom MFA; rely on
+IdP-provided MFA and conditional access policies. |POL-003 - Identity
+and Access Management Policy 4.6.5 ^|Y ^|Y ^|Y ^|Y
+
+^|20 |Authentication Model |Ensure all externally exposed endpoints are
+protected with authentication unless explicitly approved as
+public/anonymous. |ISS-013 - Authentication Standard 4.1.15 ^|Y ^|Y ^|Y
+^|Y
+
+^|21 |Backups & Recovery |Protect on-prem backups against theft and
+ransomware using offsite copies, immutable storage, or tape vaulting and
+test restore capability regularly. |ISS-003 - Data Backup and
+Restoration Standard 4.1.5 | | | ^|Y
+
+^|22 |Backups & Recovery |Ensure on-prem infrastructure is fully
+represented in business continuity and disaster recovery plans,
+including RTO/RPO and prioritisation of systems during recovery.
+|ISS-001 - Cloud Computing Standard 6 | | | ^|Y
+
+^|23 |Backups & Recovery |Ensure critical data stores are covered by
+central backup solutions where they exist, or implement backups if not.
+|ISS-001 - Cloud Computing Standard 6.1 ^|Y ^|Y ^|Y ^|Y
+
+^|24 |Backups & Recovery |Define RPO/RTO for each data store and
+validate that backup and restore processes meet those objectives.
+|ISS-003 - Data Backup and Restoration Standard 4 ^|Y ^|Y ^|Y ^|Y
+
+^|25 |Backups & Recovery |Perform and evidence periodic restore tests
+from backups for critical systems. |ISS-003 - Data Backup and
+Restoration Standard 4.1.5 ^|Y ^|Y ^|Y ^|Y
+
+^|26 |Business Continuity & Resilience |Define what degraded but safe
+operation looks like under attack or component failures (e.g. rate
+limiting, read-only mode). |ISS-006 - Incident Management Standard 2.3.3
+^|Y ^|Y ^|Y ^|Y
+
+^|27 |Business Continuity & Resilience |Ensure failover and disaster
+recovery mechanisms do not bypass security controls and maintain
+consistent auth/authorisation. |ISS-001 - Cloud Computing Standard 6 ^|Y
+^|Y ^|Y ^|Y
+
+^|28 |Business Continuity & Resilience |Test failover and disaster
+recovery at agreed intervals and document any security-relevant
+findings. |ISS-001 - Cloud Computing Standard 6 ^|Y ^|Y ^|Y ^|Y
+
+^|29 |Client Access & Device Posture |Rely on centrally managed
+corporate device security (OS hardening, EDR, MDM) where applicable.
+|ISS-008 - Mobile Security Standard 4.2.1 ^|Y ^|Y ^|Y ^|Y
+
+^|30 |Client Access & Device Posture |Ensure administrative access to
+management consoles and privileged portals is only possible from managed
+endpoints using device-based policies, IP allow-lists, or conditional
+access. |ISS-012 - Endpoint Security Standard 4.2.2 ^|Y ^|Y ^|Y ^|Y
+
+^|31 |Client Access & Device Posture |Ensure user-facing applications
+handling sensitive data can be constrained to managed devices using
+RMGal device posture policies (conditional access, mTLS, client
+certificates, or equivalent). Where a policy exemption is required,
+record a formal risk acceptance with compensating controls. |ISS-012 -
+Endpoint Security Standard 5.4.9 ^|Y ^|Y ^|Y ^|Y
+
+^|32 |Cloud Config & Network Security |Use standard landing zones,
+network patterns, and guardrails such as centrally managed VNets and
+policies where provided. |ISS-009 - Network Security Standard 5.1.2 ^|Y
+^|Y ^|Y ^|Y
+
+^|33 |Cloud Config & Network Security |Expose only required ports and
+protocols, and minimise internet-facing endpoints. |ISS-011 - Web
+Services Security Standard 4.10 ^|Y ^|Y ^|Y ^|Y
+
+^|34 |Cloud Config & Network Security |Enforce preventive guardrails
+that block wide-open network rules (e.g., 0.0.0.0/0 or ::/0) and require
+least-privilege security group/firewall policies for admin and
+data-plane access; exceptions must be formally approved and time-bound.
+|ISS-009 - Network Security Standard 10.1.2 ^|Y ^|Y ^|Y ^|Y
+
+^|35 |Cloud Config & Network Security |Ensure public-facing admin
+interfaces are protected behind VPN, bastion, or similar controlled
+access, not directly exposed to the internet. |ISS-001 - Cloud Computing
+Standard 4.3.8 ^|Y ^|Y ^|Y ^|Y
+
+^|36 |Datacentre Security |Implement layered physical access control
+(perimeter, building, room, rack) with named badge access, strong auth
+for secure areas, and regular access reviews. |ISS-004 - Asset
+Management Standard 4.3.2 | | | ^|Y
+
+^|37 |Datacentre Security |Maintain visitor management including
+pre-authorisation, ID verification, escort rules, and logging of access
+with retention per policy. |ISS-004 - Asset Management Standard 9.2 | |
+| ^|Y
+
+^|38 |Datacentre Security |Provide adequate CCTV coverage for entrances,
+racks, and critical areas and retain recordings according to policy.
+|ISS-009 - Network Security Standard 9.1.2 | | | ^|Y
+
+^|39 |Datacentre Security |Operate and monitor environmental controls
+(HVAC, fire detection and suppression, water/temperature sensors) with
+alerting into operations processes. |ISS-004 - Asset Management Standard
+7.3 | | | ^|Y
+
+^|40 |Datacentre Security |Provide redundant power (UPS and generators
+where appropriate) and test power failover under load at scheduled
+intervals. |ISS-009 - Network Security Standard 4.1.1.3 | | | ^|Y
+
+^|41 |Datacentre Security |Define and exercise a site-loss plan
+describing how services will continue if the primary datacentre is
+unavailable, including secondary sites or cloud failover. |ISS-004 -
+Asset Management Standard 4.3.3 | | | ^|Y
+
+^|42 |Datacentre Security |Secure racks and cabinets with locks and
+implement cabling practices that prevent casual disconnection or
+interception of sensitive links. |ISS-009 - Network Security Standard
+8.3.3 | | | ^|Y
+
+^|43 |Encryption at Rest |Store all data at rest on encrypted storage
+using cloud provider encryption or RMG-approved KMS. |ISS-002 -
+Cryptography Standard 6 ^|Y ^|Y ^|Y ^|Y
+
+^|44 |Encryption at Rest |Use RMG-approved key management/KMS for any
+custom keys and do not hardcode keys in code, images, or configuration
+files. |ISS-017 - Secret & Key Management Standard 4.2.5 ^|Y ^|Y ^|Y ^|Y
+
+^|45 |Encryption at Rest |Define and enforce key rotation requirements
+for encryption keys (including CMKs) and ensure rotation is automated
+where supported; monitor and alert on key policy changes and anomalous
+key usage. |ISS-002 - Cryptography Standard 4.3 ^|Y ^|Y ^|Y ^|Y
+
+^|46 |Encryption at Rest |Separate duties for key administration:
+restrict who can manage keys, who can use keys, and who can approve
+policy changes; periodically review key administrators and key grants.
+|ISS-002 - Cryptography Standard 4.3 ^|Y ^|Y ^|Y ^|Y
+
+^|47 |Encryption in Transit |Ensure all external connections use TLS
+with RMG-approved ciphers/protocols; do not permit insecure protocols.
+|ISS-002 - Cryptography Standard 5 ^|Y ^|Y ^|Y ^|Y
+
+^|48 |Encryption in Transit |Use TLS (or mTLS where mandated) for
+internal service-to-service calls carrying sensitive data, or an
+approved secure service mesh. |ISS-002 - Cryptography Standard 4 ^|Y ^|Y
+^|Y ^|Y
+
+^|49 |Encryption in Transit |Ensure TLS termination only occurs at
+approved ingress or load balancer components and is not bypassed at the
+application layer. |ISS-002 - Cryptography Standard 5.1 ^|Y ^|Y ^|Y ^|Y
+
+^|50 |Encryption in Transit |Manage certificates/PKI centrally: automate
+certificate issuance and renewal, prohibit expired/weak certificates,
+and enforce modern TLS configurations aligned to RMGal standards.
+|ISS-017 - Secret & Key Management Standard 4.6 ^|Y ^|Y ^|Y ^|Y
+
+^|51 |Environment & Tenant Separation |Segregate data between
+tenants/customers logically or physically using separate databases,
+schemas, or robust row-level security. |ISS-009 - Network Security
+Standard 8.3.15 ^|Y ^|Y ^|Y ^|Y
+
+^|52 |Environment & Tenant Separation |Enforce strict separation between
+environments (dev/test/stage/prod); do not share credentials, roles, or
+data without formal justification. |ISS-009 - Network Security Standard
+8.3.4 ^|Y ^|Y ^|Y ^|Y
+
+^|53 |Environment & Tenant Separation |Ensure admin access for one
+environment does not automatically imply access to others, particularly
+production. |ISS-001 - Cloud Computing Standard 4.4.7 ^|Y ^|Y ^|Y ^|Y
+
+^|54 |Environment & Tenant Separation |For multi-tenant systems, enforce
+tenant isolation on every request to prevent cross-tenant data access.
+|ISS-009 - Network Security Standard 8.3.3 ^|Y ^|Y ^|Y ^|Y
+
+^|55 |Governance & Exceptions |All deviations from these requirements
+must be captured in a formal risk acceptance with scope, compensating
+controls, approver, and expiry date; exceptions must be reviewed before
+expiry. |ISP-002 - Cyber Security Exception Procedure 11 ^|Y ^|Y ^|Y ^|Y
+
+^|56 |Hosts & Hardware (On-prem) |Maintain an accurate inventory of all
+servers, storage, and critical hardware with location, owner, support
+status, and data sensitivity. |ISS-012 - Endpoint Security Standard
+5.6.2 | | | ^|Y
+
+^|57 |Hosts & Hardware (On-prem) |Harden server firmware, BIOS, and BMC
+by changing default credentials, disabling unnecessary management
+protocols, and restricting management networks. |ISS-012 - Endpoint
+Security Standard 4.2.14 | | | ^|Y
+
+^|58 |Hosts & Hardware (On-prem) |Enable and manage trusted boot, TPM,
+and hardware crypto capabilities where required and integrate them with
+key management processes. |ISS-012 - Endpoint Security Standard 4.2.15 |
+| | ^|Y
+
+^|59 |Hosts & Hardware (On-prem) |Apply regular firmware and microcode
+updates for servers and storage in line with vendor security advisories
+and change control. |ISS-012 - Endpoint Security Standard 4.6.5 | | |
+^|Y
+
+^|60 |Hosts & Hardware (On-prem) |Enforce secure disposal of storage
+media through certified data wiping or physical destruction at end of
+life with evidence retained. |ISS-012 - Endpoint Security Standard 4.4.3
+| | | ^|Y
+
+^|61 |Hosts & Hardware (On-prem) |Apply strong physical and logical
+controls to on-prem HSMs or key-management hardware including dual
+control, tamper resistance, and audited key operations. |ISS-009 -
+Network Security Standard 8.3.21 | | | ^|Y
+
+^|62 |Identity & Directory (PaaS) |Integrate PaaS resources with central
+IAM and disable local users. Where a service requires local users,
+document the rationale, restrict access, rotate credentials, and
+monitor/alert on use. |ISS-013 - Authentication Standard 4.2.13 | ^|Y
+^|Y ^|Y
+
+^|63 |Identity & Directory (PaaS) |Enforce SSO and MFA from the central
+IdP for all administrative access to PaaS management consoles and
+deployment pipelines. |ISS-001 - Cloud Computing Standard 4.3.1 | ^|Y
+^|Y ^|Y
+
+^|64 |Identity & Directory (PaaS) |Use cloud IAM and policy to block
+disallowed PaaS services, regions, or SKUs and to enforce encryption,
+backup, and logging defaults. |ISS-001 - Cloud Computing Standard 4.3.8
+| ^|Y ^|Y ^|Y
+
+^|65 |Identity & Directory (PaaS) |Define and implement resource-level
+RBAC (account/subscription, resource group, service) aligned to
+application roles, with clear owners for each scope. |POL-003 - Identity
+and Access Management Policy 2.1 | ^|Y ^|Y ^|Y
+
+^|66 |Inventory & Classification |Identify and document all data types
+processed (including personal data, special categories, financial data,
+secrets, and logs). |ISS-001 - Cloud Computing Standard 4.2.2 ^|Y ^|Y
+^|Y ^|Y
+
+^|67 |Inventory & Classification |Classify data according to RMG’s
+classification scheme and label storage locations accordingly. |ISS-005
+- Information Classification Standard 7 ^|Y ^|Y ^|Y ^|Y
+
+^|68 |Inventory & Classification |Document key data flows: data sources,
+processing steps, destinations (including third parties/SaaS), and
+cross-border transfers. |ISS-001 - Cloud Computing Standard 4.2.2 ^|Y
+^|Y ^|Y ^|Y
+
+^|69 |Inventory & Classification |Define which environments may hold
+production data; lower environments must use anonymised or synthetic
+data unless explicitly justified. |ISS-001 - Cloud Computing Standard
+4.4.2 ^|Y ^|Y ^|Y ^|Y
+
+^|70 |Least Privilege & SoD |Ensure default access for new users is the
+minimum required for their role; no broad or administrative access by
+default. |ISS-009 - Network Security Standard 5.1.1 ^|Y ^|Y ^|Y ^|Y
+
+^|71 |Least Privilege & SoD |Separate administrative, support, and
+super-user functions into dedicated roles distinct from normal business
+roles. |POL-003 - Identity and Access Management Policy 4.6.3 ^|Y ^|Y
+^|Y ^|Y
+
+^|72 |Least Privilege & SoD |Enforce segregation of duties where
+required so that no single user can complete high-risk transactions
+end-to-end. |POL-003 - Identity and Access Management Policy 4.2.2 ^|Y
+^|Y ^|Y ^|Y
+
+^|73 |Least Privilege & SoD |Apply elevated assurance for highly
+privileged roles. At minimum: time-bound/JIT elevation, stronger device
+posture requirements, and enhanced logging/alerting for privileged
+actions; exceptions require formal approval and periodic revalidation.
+|ISS-009 - Network Security Standard 7.1.4 ^|Y ^|Y ^|Y ^|Y
+
+^|74 |Least Privilege & SoD |Implement break-glass access for critical
+admin functions using dedicated accounts stored in an approved vault;
+require multi-party approval where feasible and alert on every use; test
+at defined intervals. |POL-003 - Identity and Access Management Policy
+4.6.7 ^|Y ^|Y ^|Y ^|Y
+
+^|75 |Least Privilege & SoD |Enforce privileged access elevation via
+just-in-time workflows (or time-bound role assignments) and prohibit
+standing high-privilege access except via approved exceptions with
+expiry. |ISS-009 - Network Security Standard 10.1.2 ^|Y ^|Y ^|Y ^|Y
+
+^|76 |Local Data on Endpoints |Minimise local storage of sensitive data
+on endpoints and cache only what is strictly necessary. |ISS-012 -
+Endpoint Security Standard 4.3.2 ^|Y ^|Y ^|Y ^|Y
+
+^|77 |Local Data on Endpoints |If local storage is unavoidable, store
+data in OS/MDM-managed secure storage and ensure it is encrypted at
+rest. |ISS-012 - Endpoint Security Standard 5.3.1 ^|Y ^|Y ^|Y ^|Y
+
+^|78 |Local Data on Endpoints |Use appropriate cache-control headers in
+web applications to prevent sensitive content being stored in browser
+caches longer than necessary. |ISS-008 - Mobile Security Standard 4.7.4
+^|Y ^|Y ^|Y ^|Y
+
+^|79 |Logging & Sensitive Data |Prevent secrets, passwords, access
+tokens, and full payment card numbers from being written to logs.
+|ISS-006 Cyber Incident Management Standard 6.5 ^|Y ^|Y ^|Y ^|Y
+
+^|80 |Logging & Sensitive Data |Where personal or sensitive data must
+appear in logs, ensure they are masked or truncated and document
+justification. |ISS-012 - Endpoint Security Standard 5.3.3 ^|Y ^|Y ^|Y
+^|Y
+
+^|81 |Logging & Sensitive Data |Ensure all security-relevant logs are
+ingested into central logging/SIEM. |ISS-020 - SIEM System Monitoring
+Standard 4.1 ^|Y ^|Y ^|Y ^|Y
+
+^|82 |Logging & Sensitive Data |Define minimum retention periods for
+security-relevant logs by system tier/data classification and ensure
+logs are retained centrally for that period with controlled access.
+|ISS-020 - SIEM System Monitoring Standard 4.3 ^|Y ^|Y ^|Y ^|Y
+
+^|83 |Logging & Sensitive Data |Protect security logs from tampering:
+restrict delete/edit permissions, enable immutable/WORM storage for
+high-risk systems, and alert on log pipeline disruption or configuration
+changes. |ISS-020 - SIEM System Monitoring Standard 6.1 ^|Y ^|Y ^|Y ^|Y
+
+^|84 |Logging & Sensitive Data |Implement data exfiltration monitoring
+for sensitive data flows (e.g., large downloads, bulk exports, unusual
+API access patterns) and require explicit approval and logging for bulk
+export functions. |ISS-012 - Endpoint Security Standard 5.3.3 ^|Y ^|Y
+^|Y ^|Y
+
+^|85 |Minimisation, Retention & Deletion |Justify each data element
+collected and avoid collecting unnecessary data. |ISS-004 - Asset
+Management Standard 9.2 ^|Y ^|Y ^|Y ^|Y
+
+^|86 |Minimisation, Retention & Deletion |Define and implement retention
+rules for each data type, including legal/regulatory justification.
+|ISS-004 - Asset Management Standard 9.2 ^|Y ^|Y ^|Y ^|Y
+
+^|87 |Minimisation, Retention & Deletion |Implement automated deletion
+or archiving aligned to retention schedules, including for derived
+datasets. Where automation is not technically feasible, implement a
+documented manual process with evidence (tickets/logs) and formal
+exception approval with an expiry date. |ISS-004 - Asset Management
+Standard 9.2 ^|Y ^|Y ^|Y ^|Y
+
+^|88 |Minimisation, Retention & Deletion |Provide a mechanism to delete
+or anonymise records for data subject or customer deletion requests
+where required. |ISS-004 - Asset Management Standard 9.2 ^|Y ^|Y ^|Y ^|Y
+
+^|89 |Minimisation, Retention & Deletion |Document how
+deletion/rectification requests propagate to backups, archives, and logs
+(including any technical limitations) and define legal-hold behaviour
+that overrides deletion when required. |ISS-004 - Asset Management
+Standard 9.1 ^|Y ^|Y ^|Y ^|Y
+
+^|90 |Monitoring, Detection & IR |Forward security-relevant logs
+(authentication events, privilege/admin actions, configuration/policy
+changes, key/secrets access, network allow/deny, critical application
+errors) to the central SIEM/logging platform using approved transport
+and ensure delivery is monitored for disruption. |ISS-020 - SIEM System
+Monitoring Standard 4.1 ^|Y ^|Y ^|Y ^|Y
+
+^|91 |Monitoring, Detection & IR |Define what constitutes a
+security-relevant event for the system, such as repeated failed logins
+or unusual admin actions. |ISS-006 - Incident Management Standard 1.3
+^|Y ^|Y ^|Y ^|Y
+
+^|92 |Monitoring, Detection & IR |Ensure logs contain sufficient context
+(request IDs, user IDs, tenant IDs) to support incident investigation.
+|ISS-006 - Incident Management Standard 3.4 ^|Y ^|Y ^|Y ^|Y
+
+^|93 |Monitoring, Detection & IR |Provide documented runbooks or
+guidance for triaging common security incidents involving the system.
+|ISS-006 - Incident Management Standard 4.3 ^|Y ^|Y ^|Y ^|Y
+
+^|94 |Monitoring, Detection & IR |Synchronise system clocks to an
+approved time source and ensure logs include consistent, timezone-aware
+timestamps to support forensics. |ISS-006 Cyber Incident Management
+Standard 6.5.1 ^|Y ^|Y ^|Y ^|Y
+
+^|95 |Monitoring, Detection & IR |Maintain an incident response plan for
+the service/system including roles, severity classification, escalation
+paths, communications, and evidence handling; link to enterprise IR
+processes. |ISS-006 Cyber Incident Management Standard 4.1.8 ^|Y ^|Y ^|Y
+^|Y
+
+^|96 |Monitoring, Detection & IR |Conduct incident response tabletop
+exercises at a defined cadence (at least annually for high-tier systems)
+and track remediation actions to closure with owners and due dates.
+|ISS-006 Cyber Incident Management Standard 4.1.8 ^|Y ^|Y ^|Y ^|Y
+
+^|97 |Monitoring, Detection & IR |Define a minimum set of detection use
+cases and alerts for privileged access changes, authentication
+anomalies, policy/config changes, and suspected data exfiltration;
+ensure they are monitored with documented response playbooks. |ISS-006 -
+Incident Management Standard 3.4 ^|Y ^|Y ^|Y ^|Y
+
+^|98 |Network (On-prem) |Design LAN/WAN with logical segmentation (user,
+server, management, DMZ, guest, OT) using VLANs and routing policies to
+avoid mixing untrusted and high-value assets. |ISS-009 - Network
+Security Standard 8.3.22 | | | ^|Y
+
+^|99 |Network (On-prem) |Harden network devices (routers, switches,
+firewalls, wireless controllers) by using secure management protocols,
+central SSO for admin access, and no shared or default credentials.
+|ISS-009 - Network Security Standard 7.1.2 | | | ^|Y
+
+^|100 |Network (On-prem) |Implement network access control (e.g. 802.1X)
+and strong Wi-Fi authentication (WPA2-Enterprise/WPA3) to prevent rogue
+or unauthorised devices. |ISS-012 - Endpoint Security Standard 5.1.2 | |
+| ^|Y
+
+^|101 |Network (On-prem) |Encrypt sensitive WAN links (IPsec, MACsec, or
+equivalent) where traffic traverses untrusted networks. |ISS-009 -
+Network Security Standard 9.1.6 | | | ^|Y
+
+^|102 |Network (On-prem) |Monitor network devices for configuration
+changes, failures, and security events; send logs to the SIEM and store
+configuration backups under version control. |ISS-009 - Network Security
+Standard 7.1.4 | | | ^|Y
+
+^|103 |Network Controls (IaaS) |Design network segmentation for IaaS
+workloads to separate presentation, application, data, and management
+tiers and avoid flat networks for mixed trust levels. |ISS-009 - Network
+Security Standard 15.1.1 | | ^|Y ^|Y
+
+^|104 |Network Controls (IaaS) |Design and implement workload network
+segmentation for IaaS (security groups/NACLs/firewalls) with explicit
+inbound/outbound rules per tier, deny-by-default for admin interfaces,
+and documented review of any broad rules; log and alert on changes to
+network policy. |ISS-009 - Network Security Standard 12.1.8 | | ^|Y ^|Y
+
+^|105 |Network Controls (IaaS) |Enable and monitor network flow logs,
+IDS/IPS (where used), and load balancer logs and forward them to the
+central SIEM. |ISS-009 - Network Security Standard 14.1.5 | | ^|Y ^|Y
+
+^|106 |Network Controls (IaaS) |Implement DDoS protection for
+public-facing IaaS endpoints where the risk or traffic profile warrants
+it. |ISS-009 - Network Security Standard 11.1.1 | | ^|Y ^|Y
+
+^|107 |Network Controls (IaaS) |Secure DNS, DHCP, and IP address
+management for IaaS by restricting admin access, logging configuration
+changes, and avoiding single points of failure. |ISS-001 - Cloud
+Computing Standard 5.1 | | ^|Y ^|Y
+
+^|108 |Network Controls (IaaS) |For IaaS workloads, implement egress
+controls (default-deny or tightly scoped outbound rules) for high-tier
+systems and monitor for anomalous outbound destinations/volumes.
+|ISS-009 - Network Security Standard 5.1.5 | ^| ^|Y ^|Y
+
+^|109 |Network Controls (PaaS) |Configure PaaS resources to use private
+connectivity by default (VNet/VPC integration, private endpoints) and
+disable public network access. Any public exposure must be approved via
+formal risk acceptance, include compensating controls (WAF, IP
+allow-list, strong authentication), and be reviewed periodically.
+|ISS-009 - Network Security Standard 14.1.4 | ^|Y ^|Y ^|Y
+
+^|110 |Network Controls (PaaS) |Front internet-exposed PaaS components
+with an application gateway/WAF and enforce HTTPS with modern TLS only.
+|ISS-009 - Network Security Standard 12.1.3 | ^|Y ^|Y ^|Y
+
+^|111 |Network Controls (PaaS) |Restrict database and storage firewall
+rules to required subnets or private endpoints and prohibit broad rules
+such as 0.0.0.0/0. |ISS-009 - Network Security Standard 10.1.8 | ^|Y ^|Y
+^|Y
+
+^|112 |Network Controls (PaaS) |Implement egress controls for PaaS
+workloads so outbound connections are restricted to approved
+destinations using firewalls or service tags. |ISS-009 - Network
+Security Standard 5.1.4 | ^|Y ^|Y ^|Y
+
+^|113 |Network Controls (PaaS) |Ensure PaaS resources inherit standard
+logging and flow-log settings so network and platform events are
+collected in the central SIEM. |ISS-009 - Network Security Standard
+7.1.2 | ^|Y ^|Y ^|Y
+
+^|114 |Network Controls (PaaS) |Route outbound traffic through
+controlled egress points (e.g., NAT/proxy) and define an egress
+allow-list strategy for high-tier systems; log DNS queries and outbound
+connections for investigation. |ISS-009 - Network Security Standard
+13.1.8 | ^|Y ^| ^|Y
+
+^|115 |Non-human Identities & Secrets |Use managed identities, workload
+identities, or service principals instead of long-lived static keys
+wherever technically possible. |ISS-017 - Secret & Key Management
+Standard 4.2.2 ^|Y ^|Y ^|Y ^|Y
+
+^|116 |Non-human Identities & Secrets |Avoid static credentials for
+non-human access by using workload identity/managed identity where
+supported. If static secrets are unavoidable, store them only in the
+central secrets manager, inject them at runtime, and rotate them at
+defined intervals (or via automation where supported). |ISS-017 - Secret
+& Key Management Standard 4.2.2 ^|Y ^|Y ^|Y ^|Y
+
+^|117 |Non-human Identities & Secrets |Implement automated rotation for
+non-human credentials where supported; where not supported, rotate at a
+defined interval (per policy) and on role change or suspected
+compromise, with evidence of completion. |POL-003 - Identity and Access
+Management Policy 4.2.13 ^|Y ^|Y ^|Y ^|Y
+
+^|118 |Non-human Identities & Secrets |Scope non-human accounts to least
+privilege, granting only the minimal roles and permissions needed per
+component. |POL-003 - Identity and Access Management Policy 4.10.5 ^|Y
+^|Y ^|Y ^|Y
+
+^|119 |Operating System (IaaS) |Define hardened OS baselines for each OS
+type and ensure all virtual machines and images conform to the approved
+baseline. |ISS-012 - Endpoint Security Standard 5.4.2.1 | | ^|Y ^|Y
+
+^|120 |Operating System (IaaS) |Use only approved base or golden images
+for virtual machines; disallow ad-hoc marketplace or user images without
+security review. |ISS-012 - Endpoint Security Standard 4.2.11 | | ^|Y
+^|Y
+
+^|121 |Operating System (IaaS) |Implement automated OS patching with
+defined SLAs for critical and high vulnerabilities and monitor patch
+compliance. |ISS-012 - Endpoint Security Standard 5.4.2 | | ^|Y ^|Y
+
+^|122 |Operating System (IaaS) |Disable or remove unnecessary services,
+ports, and packages on all virtual machines and enforce host-based
+firewalls with least-privilege rules. |ISS-009 - Network Security
+Standard 5.1.5 | | ^|Y ^|Y
+
+^|123 |Operating System (IaaS) |Ensure all virtual machines run approved
+EDR/anti-malware agents with tamper protection enabled and report their
+status into central monitoring. |ISS-012 - Endpoint Security Standard
+5.5.1 | | ^|Y ^|Y
+
+^|124 |Operating System (IaaS) |Encrypt all VM disks, snapshots, and
+images using approved KMS keys and enforce encryption at rest by policy.
+|ISS-009 - Network Security Standard 9.1.4 | | ^|Y ^|Y
+
+^|125 |Operating System (IaaS) |Lock down remote administration by using
+bastion or jump hosts, SSH keys instead of passwords, and controlled
+gateways for RDP; prohibit direct RDP/SSH from the internet and log
+admin access. |ISS-009 - Network Security Standard 8.3.22 | | ^|Y ^|Y
+
+^|126 |Platform Services (PaaS) |Configure and regularly validate backup
+and restore settings for managed DBs, storage, and queues, including
+frequency, retention, and geo-replication where needed. |ISS-001 - Cloud
+Computing Standard 4.2.6 | ^|Y ^|Y ^|Y
+
+^|127 |Platform Services (PaaS) |Use customer-managed keys for PaaS
+services where risk or regulation requires and manage those keys through
+the central KMS lifecycle. |ISS-011 - Web Services Security Standard 3.6
+| ^|Y ^|Y ^|Y
+
+^|128 |Platform Services (PaaS) |Define resource tagging standards
+(owner, data classification, environment, criticality) and enforce them
+via policy across all PaaS resources. |ISS-001 - Cloud Computing
+Standard 4.3.1 | ^|Y ^|Y ^|Y
+
+^|129 |Project-managed Compute |Use RMG standard images or base
+container images where mandated to inherit baseline hardening, EDR, and
+logging. |ISS-001 - Cloud Computing Standard 5.1 ^|Y ^|Y ^|Y ^|Y
+
+^|130 |Project-managed Compute |Ensure all project-managed
+VMs/containers join RMG’s patch and vulnerability management processes.
+|ISS-001 - Cloud Computing Standard 4.4.8 ^|Y ^|Y ^|Y ^|Y
+
+^|131 |Project-managed Compute |Do not run unsupported OS versions or
+end-of-life runtimes (e.g. EOL Java, Python, Node). |ISS-001 - Cloud
+Computing Standard 4.4.6 ^|Y ^|Y ^|Y ^|Y
+
+^|132 |Project-managed Compute |For containerised workloads, enforce
+image scanning and admission controls so only approved,
+vulnerability-scanned, and (where required) signed images can run in
+production. |ISS-001 - Cloud Computing Standard 4.3.3 | ^|Y ^|Y ^|Y
+
+^|133 |Role & Permission Model |Define a clear role/permission model
+(RBAC/ABAC) for all user types including end users, admins, support, and
+integration accounts. |POL-003 - Identity and Access Management Policy
+4.2.6 ^|Y ^|Y ^|Y ^|Y
+
+^|134 |Role & Permission Model |Document mappings from business
+functions to application roles and to IdP groups or claims. |POL-003 -
+Identity and Access Management Policy 4.2.6 ^|Y ^|Y ^|Y ^|Y
+
+^|135 |Role & Permission Model |Implement authorisation checks at every
+relevant layer (API, services, UI, and data access), not only in the UI.
+|ISS-013 - Authentication Standard 4.1.15 ^|Y ^|Y ^|Y ^|Y
+
+^|136 |Secure Development & Deployment |Integrate with central CI/CD,
+code-scanning, and dependency-scanning tools where available. |ISS-001 -
+Cloud Computing Standard 4.4.8 ^|Y ^|Y ^|Y ^|Y
+
+^|137 |Secure Development & Deployment |Ensure all code changes undergo
+peer review, with explicit focus on security-critical logic such as
+auth, crypto, and input validation. |ISS-015 - Cyber Security Testing
+Standard 5.5 ^|Y ^|Y ^|Y ^|Y
+
+^|138 |Secure Development & Deployment |Perform threat modelling for the
+solution and address identified risks with specific controls or design
+changes. |ISS-014 - Secure Product Development Standard 4.3 ^|Y ^|Y ^|Y
+^|Y
+
+^|139 |Secure Development & Deployment |Restrict who can approve
+deployments to higher environments, particularly production. |ISS-014 -
+Secure Product Development Standard 6.1 ^|Y ^|Y ^|Y ^|Y
+
+^|140 |Secure Development & Deployment |Store Infrastructure-as-Code in
+version control, subject it to review, and scan for security
+misconfigurations. |ISS-014 - Secure Product Development Standard 4.8
+^|Y ^|Y ^|Y ^|Y
+
+^|141 |Secure Development & Deployment |Run SAST on all code changes and
+enforce severity-based gates (e.g., block Critical/High findings unless
+an approved exception exists with expiry and compensating controls).
+|ISS-014 - Secure Product Development Standard 4.6 ^|Y ^|Y ^|Y ^|Y
+
+^|142 |Secure Development & Deployment |Run dependency scanning (SCA)
+for third-party libraries and container base images; maintain an
+inventory/SBOM for each release and support rapid identification of
+impacted systems. |ISS-014 - Secure Product Development Standard 7.5 ^|Y
+^|Y ^|Y ^|Y
+
+^|143 |Secure Development & Deployment |Run DAST (or equivalent dynamic
+testing) for internet-facing applications/APIs on a defined cadence and
+before major releases; address findings within defined SLAs or formally
+accept risk. |ISS-001 - Cloud Computing Standard 4.3.6 ^|Y ^|Y ^|Y ^|Y
+
+^|144 |Secure Development & Deployment |Perform independent penetration
+testing for internet-facing systems at least annually and after material
+architecture changes; track and remediate findings to SLA with formal
+exception handling. |ISS-011 - Web Services Security Standard 3.9 ^|Y
+^|Y ^|Y ^|Y
+
+^|145 |Third-party & Supply Chain |Maintain an inventory of all
+third-party services, libraries, and APIs used by the project. |ISS-024
+- Third Party Security Standard v1.0 4.2 ^|Y ^|Y ^|Y ^|Y
+
+^|146 |Third-party & Supply Chain |Ensure any third-party SaaS handling
+sensitive data has passed RMG’s vendor security or DPIA process.
+|ISS-024 - Third Party Security Standard v1.0 4.2 ^|Y ^|Y ^|Y ^|Y
+
+^|147 |Third-party & Supply Chain |Pin or control third-party
+dependencies to avoid unexpected changes and apply security updates
+within defined SLAs. |ISS-024 - Third Party Security Standard v1.0 4.2
+^|Y ^|Y ^|Y ^|Y
+
+^|148 |Third-party & Supply Chain |For any SaaS service used, the
+supplier must support RMG-approved SSO (SAML/OIDC) with enforced MFA via
+the central IdP and must allow disabling of local/standalone accounts.
+|ISS-001 - Cloud Computing Standard 4.3.10 ^|Y ^| ^| ^|
+
+^|149 |Third-party & Supply Chain |For SaaS services, the supplier must
+support automated user provisioning and deprovisioning (e.g., SCIM) or
+provide an equivalent automated mechanism; deprovisioning must complete
+within a defined SLA. |ISS-001 - Cloud Computing Standard 4.3.12 ^|Y ^|
+^| ^|
+
+^|150 |Third-party & Supply Chain |For SaaS services, the supplier must
+provide admin/audit logs and security-relevant telemetry exportable to
+the central SIEM (API/webhook or supported connector) with defined event
+coverage (auth, admin actions, config changes). |ISS-001 - Cloud
+Computing Standard 5.3 ^|Y ^| ^| ^|
+
+^|151 |Third-party & Supply Chain |For SaaS services handling sensitive
+data, define and document data residency requirements and ensure the
+supplier provides sub-processor transparency and change notification
+within an agreed timeframe. |ISS-024 - Third Party Security Standard
+v1.0 4.2 ^|Y ^| ^| ^|
+
+^|152 |Third-party & Supply Chain |For SaaS suppliers, contract terms
+must include security incident notification timelines, support for
+investigation (log access, evidence preservation), and clear RACI for
+containment/eradication actions. |ISP - 003 Cyber Security Third Party
+Assurance – Onboarding Process 2.11 ^|Y ^| ^| ^|
+
+^|153 |Third-party & Supply Chain |For SaaS services, define an exit
+plan: data export format and cadence, validated restore/import path
+where required, and evidence of secure deletion on termination
+(including handling of backups where feasible). |ISS-001 - Cloud
+Computing Standard 6.1 ^|Y ^| ^| ^|
+
+^|154 |Third-party & Supply Chain |Establish a SaaS tenant hardening
+baseline (admin roles, conditional access, approved integrations,
+external sharing controls, API token governance) and validate compliance
+at onboarding and periodically. |ISS-013 - Authentication Standard
+4.1.15 ^|Y ^| ^| ^|
+
+^|155 |Third-party & Supply Chain |Protect build integrity: restrict who
+can publish artifacts, sign release artifacts/images, and verify
+signatures at deploy time; store build provenance (e.g., SLSA-style
+attestations) for high-tier systems. |ISS-024 - Third Party Security
+Standard v1.0 4.2 ^|Y ^|Y ^|Y ^|Y
+
+^|156 |Workload Operations (IaaS) |Define a resource lifecycle process
+for IaaS workloads covering creation, change, ownership, and
+decommissioning to prevent orphaned resources. |ISS-001 - Cloud
+Computing Standard 5.1 | | ^|Y ^|Y
+
+^|157 |Workload Operations (IaaS) |Ensure any self-managed orchestration
+platforms (e.g. self-hosted Kubernetes, OpenShift) meet security
+baselines including RBAC, network policies, image scanning, and secrets
+management. |ISS-009 - Network Security Standard 6.1.15 | | ^|Y ^|Y
+
+^|158 |Workload Operations (IaaS) |Run regular vulnerability scans
+against IaaS workloads using central tooling where available and
+remediate findings within defined SLAs, tracking exceptions formally.
+|ISS-001 - Cloud Computing Standard 4.4.8 | | ^|Y ^|Y
+
+^|159 |Workload Operations (IaaS) |Ensure backups and snapshots for IaaS
+workloads are encrypted, access-controlled, and protected from tampering
+or deletion, with restore procedures tested. |ISS-009 - Network Security
+Standard 9.4.1 | | ^|Y ^|Y
+
+^|160 |Workload Operations (IaaS) |Document and test disaster recovery
+procedures for IaaS workloads, including rebuild from code/images in
+another region/account and data restoration. |ISS-003 - Data Backup and
+Restoration Standard 5.1.10 | | ^|Y ^|Y
+
+^|161 |Workload Operations (IaaS) |Monitor cloud account quotas and
+limits (such as IP addresses, cores, storage) that could block incident
+response or disaster recovery and adjust proactively. |ISS-001 - Cloud
+Computing Standard 6 | | ^|Y ^|Y
+|===
+
+IMPORTANT: The above table should be used as a reference for the architecture that need to be met for the solution. The solution should meet all the requirements marked with "Y" in the "Mandatory" column based on the deployment platform. The solution should also meet as many of the "Recommended" requirements as possible to enhance the security posture. Any deviations from the mandatory requirements must be documented with a formal risk acceptance, including compensating controls and an expiry date.
+
+=== Data Flow Diagram / Threat Modelling 
+
+=== STRIDE Mitigation
+
+.STRIDE Mitigation
+[width="100%",cols="20%,25%,35%, 20%",options="header",]
+|===
+|*STRIDE*                   |*Issue*    |*Mitigation*   |*Evidence*
+|*Spoofing*                   |*Spoofing: User Identity* - Attacker pretends to be a legitimate OPG/COM user to access FDS. +
+                             *Spoofing: Service Identity* - Attacker pretends to be a trusted upstream system (MQ/FTPS/JoinedUp).         |*Web Application Firewall (WAF)* - Protects FDS frontend and APIs from common web attacks +
+                             *APIM Security Policies* - Rate limiting, JWT validation, IP filtering, schema validation +
+                             *Role-Based Access Control (RBAC)* - Ensures least-privilege access for users and services +
+                             *MQ Authentication & ACLs* - Prevents spoofing and tampering on MQ channels, Service identity validation      |
+|*Tampering*                  |*Tampering: API Payloads* - Modification of duty, timesheet or attendance data in transit. +
+                             *Tampering: Import Files* - Modification of files sent via FTPS before ingestion.          
+                            |*TLS Encryption* - Encrypts API traffic +
+                             *APIM Security Policies* - Rate limiting, JWT validation, IP filtering, schema validation, Schema validation +
+                             *FTPS Hardening* - Ensures secure file transfer with MFA, IP allowlists, and checksums, Checksums & secure transfer +
+                             *Input Validation* - Prevents SQL injection and malformed payloads, Rejects malformed data         |
+|*Repudiation*                |*Repudiation: User Actions* - Users deny having approved duties or timesheets. +
+                             *Repudiation: Admin Changes* - Admins deny configuration or security‑relevant changes.          
+                            |*Audit Logging* - Captures user and admin actions for non-repudiation, Immutable logs, Admin activity logging' +
+                             *SIEM Monitoring* - Detects anomalies, DoS attempts, tampering, and suspicious activity, Alerting on suspicious actions        |
+|*Information Disclosure*     |*Information Disclosure: PII & HR Data* - Exposure of personal and HR data from FDS DB and staging. +
+                             *Information Disclosure: Integration Data* - Exposure of data in transit via MQ/FTPS/Data Platform.          
+                            |*TLS Encryption* - Encrypts data in transit +
+                             *Encryption at Rest* - Protects DB contents, Protects FDS DB, Staging DB, and exported files +
+                             *Azure Key Vault* - Protects secrets, connection strings, certificates, Protects credentials +
+                             *Role-Based Access Control (RBAC)* - Ensures least-privilege access for users and services, Restricts DB access        |
+|*Denial of Service (DoS)*    |*DoS: Frontend & APIs* - Overwhelming FDS frontend and APIs with traffic. +
+                             *DoS: Integration Channels* - Flooding MQ/FTPS to disrupt data flows.           
+                            |*Web Application Firewall (WAF)* - Protects FDS frontend and APIs from common web attacks, Blocks volumetric attacks +
+                             *APIM Security Policies* - Rate limiting +
+                             *SIEM Monitoring* - Detects MQ flooding        |
+|*Elevation of Privilege*     |*Elevation of Privilege: Application* - Exploiting application flaws to gain higher privileges. +
+                             *Elevation of Privilege: Database* - Abusing DB permissions to bypass application controls.          
+                            |*Role-Based Access Control (RBAC)* - Ensures least-privilege access for users and services, Restricts backend privileges +
+                             *Input Validation* - Prevents injection +
+                             *Azure Key Vault* - Protects DB credentials +
+                             *Encryption at Rest* - Protects DB files       |
+|===
+
+=== Identity & Access Management (IAM)
+
+_This section should explain proposed authentication and authorization mechanism. It should include Role Based Access Control (RBAC), Multi-factor Authentication (MFA) etc. with details around 3rd Party/Admin/Break Glass/Customer/User -User Access Matrix, Groups, Roles, Permissions, Access method, Secure Access Method, MFA etc._
+
+NOTE: A break glass account (or emergency access account) is a highly privileged IT account designed exclusively for emergencies. It acts as a digital failsafe to bypass standard security controls (like SSO, MFA, or Conditional Access policies) so administrators can restore system access if regular channels fail.
+
+=== [.line-through]#Data Categorization#
+
+NOTE: Like PII, Finance, Customer, Intellectual Property etc
+
+=== Usage of AI ([.green]#If Applicable#)
+
+NOTE: This should contain Purpose of AI (Use Case), Approved use of AI, Securing the AI etc.
+
+=== Security RAID Log
+
+[width="100%",cols="10%,10%,35%,10%,35%",options="header",]
+|===
+|*ID*   |*Type*     |*Risk / Debt*  |*Level*    |*Mitigation*
+|       |           |               |           |
+|       |           |               |           |
+|===
+
+=== Application Business Criticality Rating
+
+=== Quantum Cryptography Secure [.red]#(TBC)#
+
+=== Active Directory Tier Level [.red]#(TBC)#
+
+=== Privileged Access Requirements (CyberArk)
+
+=== User Provisioning Requirement (SailPoint)
+
+=== Key Management Services Requirements

@@ -1,0 +1,128 @@
+/*
+specification {
+  element securityActor
+  element securityService
+  element securityBoundary
+  element threat
+}
+
+model {
+
+  // --- Security Actors ---
+  secops = securityActor 'Security Operations'
+  auditor = securityActor 'Audit & Compliance'
+  identityAdmin = securityActor 'Identity Administrator'
+
+  // --- Identity & Access Management ---
+  iam = securityService 'Identity & Access Management' {
+    description 'Centralised authentication and authorisation for FDS users'
+    technology 'Azure AD / OIDC'
+  }
+
+  mfa = securityService 'Multi-Factor Authentication' {
+    description 'Provides MFA for privileged and sensitive operations'
+  }
+
+  // --- Secrets & Key Management ---
+  azurekeyvault = securityService 'Azure Key Vault' {
+    description 'Stores API keys, connection strings, certificates'
+    technology 'Azure Key Vault'
+  }
+
+  // --- Security Monitoring ---
+  siem = securityService 'SIEM' {
+    description 'Security event ingestion, correlation and alerting'
+    technology 'Splunk / Sentinel'
+  }
+
+  auditStore = securityService 'Audit Log Store' {
+    description 'Immutable audit trail for compliance'
+    technology 'Append-only storage'
+  }
+
+  // --- Trust Boundaries ---
+  fdsBoundary = securityBoundary 'FDS Application Boundary'
+  dataBoundary = securityBoundary 'Data Integration Boundary'
+  externalBoundary = securityBoundary 'External Systems Boundary'
+
+  // --- Relationships to existing FDS components ---
+
+  // Authentication flows
+  FDS.frontend -> iam 'User authentication (OIDC)'
+  FDS.apis -> iam 'Validates access tokens'
+  identityAdmin -> iam 'Manages roles & permissions'
+
+  // Secrets usage
+  FDS.backend.secretmanagement -> azurekeyvault 'Retrieves secrets'
+  FDS.backend.caching -> azurekeyvault 'Retrieves Redis connection string'
+  FDS.dataintegration.dataimport -> azurekeyvault 'Retrieves FTPS credentials'
+  FDS.dataintegration.dataexport -> azurekeyvault 'Retrieves MQ credentials'
+
+  // Audit & monitoring
+  FDS.frontend -> auditStore 'User activity logs'
+  FDS.apis.actionLog -> auditStore 'API audit events'
+  FDS.backend -> siem 'Security events'
+  BIG.MQ -> siem 'Integration failures'
+  BIG.FTPS -> siem 'File transfer events'
+
+  // Trust boundaries
+  FDS -> fdsBoundary
+  FDS.dataintegration -> dataBoundary
+  email-provider -> externalBoundary
+  JoinedUp -> externalBoundary
+  barcodescanner -> externalBoundary
+  PSP -> externalBoundary
+  M5 -> externalBoundary
+  Winpak -> externalBoundary
+
+  // Threat modelling (optional)
+  threat_sql = threat 'SQL Injection'
+  threat_replay = threat 'Token Replay Attack'
+  threat_phishing = threat 'Phishing Attack'
+
+  threat_sql -> FDS.apis 'Attempts malicious payloads'
+  threat_replay -> iam 'Attempts token reuse'
+  threat_phishing -> COM 'Targets privileged users'
+}
+
+views {
+
+  view security_context {
+    title 'FDS Security Context'
+    include iam, mfa, azurekeyvault, siem, auditStore
+    include secops, auditor, identityAdmin
+    include fdsBoundary, externalBoundary
+    include FDS, PSP, M5, Winpak, JoinedUp
+  }
+
+  view fds_security_boundary {
+    title 'FDS Application Security Boundary'
+    include FDS.*
+    include azurekeyvault, iam, siem, auditStore, fdsBoundary
+  }
+
+  view threat_surface {
+    title 'Threat Surface'
+    include FDS.frontend, FDS.apis.*, BIG.*
+    include threat_phishing, threat_replay, threat_sql
+    include iam
+    exclude FDS.backend.*, FDS.databases.*
+  }
+
+  view secrets_access {
+    title 'Secrets Access'
+    include azurekeyvault
+    include FDS.backend.secretmanagement
+    include FDS.backend.caching
+    include FDS.dataintegration.dataimport
+    include FDS.dataintegration.dataexport
+  }
+
+  view audit_monitoring {
+    title 'Audit & Monitoring'
+    include auditStore, siem
+    include FDS.frontend, FDS.apis.actionLog, FDS.backend.*
+    include BIG.MQ, BIG.FTPS
+  }
+}
+*/

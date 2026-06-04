@@ -1,0 +1,426 @@
+model {
+    //Define various users of the system
+    OPG = actor 'OPG' 'Frontline Workers' {
+        -> PDA 'Scans In and Out'
+        -> console 'Scans In and Out'
+        -> PeopleApp 'View approved overtime shifts'
+    }
+
+    PSM = actor 'COM/PCOM/CCOM/PSM/Bookroom' {
+        description 'Manages duties in Delivery and Processing Units'
+
+        -> FDS.frontend.approvals 'Manages duty through FDS Web UI'
+    }
+
+    DeliveryAssurance = actor 'DeliveryAssurance/OPL/Finance Business Partner' {
+        description 'People responsible to approve duty change submissions'
+
+        -> FDS.frontend.approvals 'Approves or rejects duty submissions'
+    }
+
+    COM = actor 'COM/PCOM/CCOM' {
+        description 'Managers who are responsible to create attendance plans and approve overtime within COM, PCOM and CCOM'
+
+        -> FDS.frontend.attendanceplan 'Creates and updates attendance plans'
+        -> FDS.frontend.timesheet 'Approves or rejects overtime, SA and agency shifts'
+    }
+
+    //Define all external systems (Including external to RMG)
+    email-provider = external-system 'Email Provider' {
+        technology 'Microsoft Exchange'
+        description '_3rd-party_ Platform to send approval emails'
+    }
+
+    JoinedUp = external-system 'JoinedUp' {
+        description '_3rd-party_ SaaS provider for agency worker requisition and payments'
+        icon ../icons/beeline.png
+
+        -> FDS 'Sends agency worker information'
+    }
+
+    barcodescanner = external-system 'Barcode Scanner' {
+        description 'Scans barcodes from employee IDs'
+        icon tech:android-icon
+        console = system 'Console' {
+            icon tech:android-icon
+        }
+
+        PDA = system 'PDA' {
+            icon tech:android-icon
+            style {
+                shape mobile
+            }
+        }
+        -> MQ 'Sends attendances' 
+    }
+    
+    PSP = platform 'PSP' {
+        icon tech:sap
+        technology 'SAP'
+
+        -> MQ 'Sends absences and overtime shift status'
+        -> FTPS 'Sends HR master data'
+    }
+
+    system PeopleApp {
+        title 'People App'
+        style {
+            shape mobile
+            color muted
+        }
+        PDA -> this 'Hosts'
+    }
+
+    DeliverySystemApps = system 'Delivery System Apps' {
+        DDSLegacy = system 'DDS (Legacy)' {
+            technology 'Excel'
+            icon ../icons/excel.svg
+
+            -> APIM 'Duty data for legacy DDS'
+        }
+
+        DDSMars = system 'DDS (MARS)' {
+            technology 'Excel'
+            icon ../icons/excel.svg
+
+            -> APIM 'Duty data for MARS DDS'
+        }
+
+        MDS = system 'MDS' {
+            technology 'Excel'
+            icon ../icons/excel.svg
+
+            -> APIM 'Duty data for processing MDS'
+        }
+
+        DPT = system 'Desktop Planning Tool' {
+            technology 'Excel'
+            icon ../icons/excel.svg
+
+            -> DDSMars 'MARS Duty data'
+        }
+    }
+
+    external-system M5 {
+        title 'M5 Fleet'
+        technology 'AssetWorks'
+        icon ../icons/assetworks.jpeg
+
+        -> FTPS 'Fleet data'
+    }
+
+    external-system Winpak {
+        title 'Winpak'
+        technology 'Honeywell'
+        icon ../icons/winpak.svg
+
+        -> FTPS 'ID Card data'
+    }
+
+    platform DataPlatform {
+        title 'Data Platform'
+        technology 'GCP'
+        icon tech:google-cloud
+
+        -> Reporting 'Sends data for reporting'
+    }
+
+    platform Reporting
+    {
+        title 'Reporting Platform'
+        technology 'Qlik'
+        icon tech:qlik
+    }
+
+    system RCS
+    {
+        title 'Resource Control System'
+        technology 'Visual Basic'
+        icon ../icons/vb.png
+    }
+    
+    BIG = container 'BIG' {
+        title 'BIG'
+        technology 'IBM MQ / Azure APIM'
+        icon azure:api-proxy
+        
+        FTPS = fileshare 'FTPS'{
+            title 'FTPS'
+            technology 'Secured FTP'
+            icon ../icons/ftps.svg
+
+            -> dataimport 'Receives data files'
+            -> DataPlatform 'Sends data files for reporting'
+        }
+
+        MQ = queue 'MQ' {
+            title 'MQ'
+            technology 'IBM MQ'
+            icon ../icons/ibm-mq.png
+        }
+
+        APIM = system 'APIM' {
+            title 'API Gateway'
+            technology 'Azure APIM'
+            icon azure:api-proxy
+
+            -> PeopleApp 'Sends approved overtime shifts'
+        } 
+    }
+
+    platform MDM {
+        title 'MDM'
+        technology 'TeraData'
+        icon ../icons/Teradata.svg
+
+        -> FTPS 'Sends master data'
+    } 
+
+    //FDS Architecture Model
+    FDS = system 'Frontline Demand & Supply' {
+        link ./model.c4#L7 'Model'
+        description 'Resource Planning and Duty Management System'
+        metadata {
+            ProjectManager 'Nilgul Perk, Jamie Dobson'
+            SolutionArchitects 'Rashu Khanna, Kunle Olagbegi'
+        }
+        style {
+            color primary
+            size xlarge
+        }
+        databases = container 'Databases' {
+            description 'Databases used by FDS'
+            technology 'SQL Server'
+            icon tech:microsoft-sql-server
+
+            FDSDB = database 'FDS SQL DB' {
+                style {
+                    color amber
+                }
+                metadata {
+                    DataRetentionPolicy '7 years'
+                    BackupPolicy '{
+                        FullBackup: "Daily full backup with 14 days retention"
+                        DifferentialBackup: "Hourly differential backup with 24 hours retention"
+                    }'
+                    Version '2019'
+                }
+            }
+
+            StagingDB = database 'Staging DB' {
+                description 'Staging database to store imported data as is'
+                style {
+                    color amber
+                }
+            }
+
+            DelSysDB = database 'DelSys DB' {
+                description 'Database to store delivery system data for reporting and integration'
+                style {
+                    color amber
+                }
+            }
+        }
+        
+        dataintegration = container 'DataIntegration' {
+            technology 'SSIS'
+            icon tech:sql-developer
+
+            dataimport = component 'Data Import' {
+                technology 'SSIS'
+                icon tech:microsoft-sql-server
+                description 'Process to ingest data from various sources'
+
+                -> StagingDB 'Stores imported data as is in staging database'
+                -> FDSDB 'Stores validated data in FDS transactional database'
+            }
+
+            dataexport = component 'Data Export' {
+                technology 'SSIS'
+                icon tech:microsoft-sql-server
+                description 'Process to export various data entities for downstream systems'
+
+                -> DataPlatform 'Sends data to data platform for reporting'
+                -> MQ 'Sends work schedule and approved overtime & SA shifts to PSP for automated payments'
+                -> agencyservice 'Consumes agency service to receive agency workers and send approved agency shifts'
+                -> DelSysDB 'Stores delivery system data for reporting and integration'
+            }
+
+        }
+
+        backend = container 'Backend' {
+            description 'Backend components of FDS'
+            technology '.NET'
+            icon tech:dotnet
+
+            caching = component 'Application Caching' {
+                description 'Backend component to interact with Redis cache'
+                technology 'Redis Cache'
+                icon tech:redis
+            }
+
+            secretmanagement = component 'Application Secrets Management' {
+                description 'Backend component to manage application\'s security keys'
+                technology 'Azure Key Vault'
+                icon azure:keys
+            }
+
+            appstorage = component 'Application Storage' {
+                description 'Backend component to manage application\'s storage'
+                technology 'Azure Storage Accounts'
+                icon azure:files
+            }
+/*
+            appdb = component 'Application Databases' {
+                description 'Backend component to manage data read write into SQL Server'
+                technology 'RDBMS'
+                icon bootstrap:database
+            }
+*/            
+            approvalworkflow = component 'Approval Workflow' {
+                description 'Backend component to manage approval workflow for duty revision approvals'
+                technology '.NET'
+                icon tech:dotnet
+
+                -> FDSDB 'Stores workflow status changes in FDS database'
+            }
+
+            attendanceplan = component 'Attendance Plan' {
+                icon tech:dotnet
+                technology '.NET'
+                description 'Backend component to manage attendance plans'
+
+                -> FDSDB 'Reads and writes attendance plans from/to FDS database'
+                -> timesheet 'Reads timesheet information for each employee'
+            }
+
+            timesheet = component 'Timesheet Management' {
+                description 'Backend component to manage timesheet approvals for overtime and agency shifts'
+                icon tech:dotnet
+                technology '.NET'
+
+                -> FDSDB 'Reads and writes timesheets from/to FDS database'
+            }
+
+            dutymanager = component 'Duty Manager' {
+                description 'Backend component to manage duties in a unit'
+                icon tech:dotnet
+                technology '.NET'
+
+                -> FDSDB 'Reads and writes duty data from/to FDS database'
+                -> attendanceplan 'Reads duty, rotation and default duty holder information'
+            }
+        }
+
+        apis = container 'APIs' {
+            description 'APIs provided by FDS for integration with other systems'
+            icon tech:net
+            technology '.NET'
+
+            email = restapi 'Email Service' {
+                icon tech:net
+                technology '.NET'
+                description 'Sends emails to customers using templates and customer data.'
+
+                -> email-provider 'delegates email sending'
+            }
+
+            agencyservice = restapi 'Agency Worker Service' {
+                icon tech:net
+                technology '.NET'
+                description 'Requests agency workers information from JoinedUp and sends approved shifts for payments'
+
+                -> JoinedUp 'Sends approved shifts'
+            }
+
+            actionLog = restapi 'Action Log Service' {
+                icon tech:net
+                technology '.NET'
+                description 'Audits user activities.'
+            }
+
+            dutymanagerservice = restapi 'Duty Manager Service' {
+                icon tech:net
+                technology '.NET'
+                description 'Duty manager service reads and writes duty data from/to FDS DB.'
+
+                -> backend.dutymanager 'Sends and receives duty data to/from duty manager backend component'
+            }
+
+            timesheetservice = restapi 'Timesheet Service' {
+                icon tech:net
+                technology '.NET'
+                description 'Timesheet service reads and writes timesheet data from/to FDS DB.'
+
+                -> backend.timesheet 'Sends and receives timesheet data to/from timesheet manager backend component'
+            }
+
+            attendanceplanservice = restapi 'Attendance Plan Service' {
+                icon tech:net
+                technology '.NET'
+                description 'Timesheet service reads and writes timesheet data from/to FDS DB.'
+
+                -> backend.attendanceplan 'Sends and receives attendance plan data to/from attendance plan manager backend component'
+            }
+
+            approvalworkflowservice = component 'Approval Workflow Service' {
+                description 'Approval workflow service reads and writes approval workflow status to/from approval workflow backend component'
+                technology '.NET'
+                icon tech:net
+
+                -> FDSDB 'Stores workflow status changes in FDS database'
+            }
+        }
+
+        
+        frontend = webapp 'Frontend Web App' {
+            icon tech:angular
+            technology 'Angular.js / TypeScript'
+            description 'Provides access to the services via the web interface'
+
+            this -> actionLog 'sends user activity data'
+
+            dutymanager = component 'Duty Manager' {
+                icon tech:angular
+                technology 'Angular.js / TypeScript'
+                description 'Displays duties and allows users to add/delete/modify duties and submit for approval'
+
+                -> FDS.apis.dutymanagerservice 'Sends and receives duties and rotations'
+            }
+
+            approvals = component 'Approval Workflow' {
+                icon tech:angular
+                technology 'Angular.js / TypeScript'
+                description 'Displays submitted duties and allows users to approve or reject duty changes'
+
+                -> FDS.apis.approvalworkflowservice 'Sends and receives active approval workflows'
+            }
+
+            attendanceplan = component 'Attendance Plan' {
+                icon tech:angular
+                technology 'Angular.js / TypeScript'
+                description 'Allows users to create/modifi attendance plans, create overtime shifts and assign OPGs to the duties'
+
+                -> FDS.apis.attendanceplanservice 'Sends and receives attendance plan data'
+            }
+
+            timesheet = component 'Timesheet Approval' {
+                icon tech:angular
+                technology 'Angular.js / TypeScript'
+                description 'Displays overtime and agency shifts and lets user approve or reject shifts.'
+
+                -> FDS.backend.timesheet 'Sends and receives timesheet data'
+            }
+        }
+
+        //Define different interactions
+        this -> APIM 'Calls API'
+        PSP -> this 'Sends absences, HR master data and overtime shift status'
+        barcodescanner -> this 'Sends attendance data'
+        M5 -> this 'Sends fleet data'
+        MQ -> this 'Sends attendance data'
+        MQ -> this 'Sends absences'
+        MQ -> this 'Sends overtime shift status'
+        MQ -> this 'Sends approved overtime shifts'
+    }
+}

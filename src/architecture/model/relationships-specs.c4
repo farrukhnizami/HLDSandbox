@@ -1,0 +1,9 @@
+specification {
+  relationship publishes
+  relationship subscribes
+  relationship Scans-In-Out
+  relationship sends
+  relationship receives
+  relationship manages  
+  
+}

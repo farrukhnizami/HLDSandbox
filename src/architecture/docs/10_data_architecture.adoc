@@ -1,0 +1,91 @@
+== Data Architecture
+
+*Content*
+
+_Data architecture is the blueprint that dictates how an organization acquires, stores, transforms, distributes, and consumes data. It provides a standardized framework that connects business objectives to technical infrastructure, ensuring data is secure, consistent, scalable, and readily accessible for operations and AI applications._
+
+*_Core Components_*
+
+_A robust data architecture consists of several interconnected building blocks:_
+
+* *Data Models*: _Blueprints that map data structures, relationships, and business rules._
+* *Data Flow & Pipelines*: _Systems that ingest, process, and move data from sources to destinations._
+* *Data Storage*: _The repositories where data lives, such as Data Lakes, Data Warehouses, or Lakehouses._
+* *Data Governance & Security*: _Policies, standards, and access controls that maintain data quality and ensure regulatory compliance._
+
+*Motivation*
+
+_A robust data architecture aligns data systems with business goals, providing a blueprint for data management, storage, and usage. Its core benefits include unified governance, improved data quality, and scalable infrastructure that accelerates real-time analytics and artificial intelligence (AI) adoption._
+
+*_Key Benefits of Data Architecture_*
+
+* *Eliminates Data Silos*: _Unifies disparate systems, allowing departments to securely share data and establish a reliable "single version of the truth"._
+* *Enhanced Data Quality*: _Enforces consistent data standards and validation rules to minimize duplication and prevent inaccurate reporting._
+* *Scalability & Cost Optimization*: _Optimizes cloud storage and data processing, reducing hardware needs and allocating operational resources efficiently._
+* *Unified Governance & Compliance*: _Implements centralized protocols to secure sensitive information and meet regulatory frameworks like GDPR._
+* *Accelerated Innovation*: _Provides a reliable, controlled foundation for advanced technologies like AI, machine learning, and real-time predictive analytics._
+
+*Form*
+
+_Data Architecture should be captured in form of *Data Models* and *Data Flow Diagrams* alongside a bunch of information captured in various tables and text paragraphs. The following sections outline the key information that should be captured for any new interface or data product created._
+
+=== Data Flow Diagram
+
+.Data Flow Diagram - Level 0
+image::../model/diagrams/dfd_level0.png[Data Flow Diagram - Level 0]
+
+NOTE: For any new interface
+
+=== Ownership model (data owner, data steward, data consumer)
+
+.Data Ownership Model
+[width=100%, cols="40%,20%,20%,20%", options="header"]
+|===
+^|*Interface* ^|*Owner* ^|*Steward* ^|*Consumer*
+|           |       |       |       
+|===
+
+=== Policies: Data classification ([.green]#public#, [.yellow]#internal#, [.red]#confidential#, [.purple]#restricted#), Retention (e.g., 5 years), Compliance (GDPR, HIPAA, etc.)
+
+.Data Policies
+[width=60%]
+|===
+|*Data Classification* |
+|*Data Categorization* |
+|*Retention Policy*    |
+|*Data Compliance*     |
+|===
+
+=== Data quality dimensions: Accuracy (e.g., 99%), completeness (e.g., 100%), timeliness (e.g., real-time), consistency (e.g., schema validation), uniqueness (e.g., no duplicates)
+
+.Data Quality Dimensions
+[width=60%]
+|===
+|*Accuracy* |
+|*Completeness*    |
+|*Timeliness*      |
+|*Consistency*     |
+|*Uniqueness*      |
+|*Volume*          |
+|===
+
+NOTE: Specify any new data product created or any of the existing data products used. For each data product:
+
+=== Purpose / business use case
+=== Product owner (business + technical)
+=== Consumers (teams, applications)
+=== Value statement (why it exists)
+=== Mapping between new interface and data product
+ 
+NOTE: Data Product Architecture
+
+=== Data product boundaries (e.g., domain-specific, cross-domain)
+=== Interaction between data products
+=== Event-driven / batch flows
+=== Storage layers (raw → curated → consumption)
+
+_In modern data platforms, the "Raw → Curated → Consumption" pipeline is a standardized approach to data organization, often referred to as the Medallion Architecture (Bronze → Silver → Gold). It ensures data integrity, minimizes pipeline fragility, and optimizes information for downstream analytics and machine learning._
+
+. *Raw Layer (Landing/Bronze)*: _The Raw layer is the initial entry point where ingested data from various sources (APIs, IoT, databases, logs) is stored in its native, unaltered format.Purpose: Acts as an immutable historical record and a source of truth that allows you to replay pipelines if errors occur downstream.Data State: Unprocessed, varying structures, frequently stored as JSON, CSV, or raw binary.Who interacts: Primarily used by data engineers._
+. *Curated Layer (Cleansed/Silver)*: _The Curated layer sits between the raw and consumption layers, where raw data is transformed into validated, cleansed, and standardized datasets.Purpose: Establishes data reliability by removing duplicates, enforcing schema definitions, and applying business logic.Data State: Relational, standardized, and often partitioned into columnar formats like Parquet or Delta for better compression and query speed.Who interacts: Heavily accessed by data scientists and data analysts._
+. *Consumption Layer (Serving/Gold)*: _The Consumption layer is the final destination, engineered specifically for business users, executives, and downstream applications.Purpose: Houses highly aggregated, project-specific data ready for business intelligence (BI) reporting, dashboards, and machine learning models.Data State: Denormalized, heavily structured (often into Star or Snowflake schemas), and read-optimized.Who interacts: Business analysts, executives, and client-facing applications._

@@ -1,0 +1,116 @@
+/*
+model {
+
+  // --- Zero‑Trust Core Principles as Controls ---
+
+  zt_auth = securityService 'Zero‑Trust: Strong Authentication' {
+    description 'Continuous identity verification using Azure AD, MFA, conditional access'
+  }
+
+  zt_authorization = securityService 'Zero‑Trust: Least Privilege Access' {
+    description 'RBAC, ABAC, and scoped API permissions'
+  }
+
+  zt_microsegmentation = securityService 'Zero‑Trust: Micro‑Segmentation' {
+    description 'Segregates FDS frontend, APIs, backend, DB, and integration channels'
+  }
+
+  zt_device = securityService 'Zero‑Trust: Device Trust' {
+    description 'Ensures only compliant devices (PDA, console, laptops) can access FDS'
+  }
+
+  zt_encryption = securityService 'Zero‑Trust: Encryption Everywhere' {
+    description 'TLS 1.2+, encryption at rest, secure MQ/FTPS channels'
+  }
+
+  zt_monitoring = securityService 'Zero‑Trust: Continuous Monitoring' {
+    description 'SIEM, anomaly detection, behavioural analytics'
+  }
+
+  zt_policy = securityService 'Zero‑Trust: Policy Enforcement' {
+    description 'APIM policies, WAF rules, schema validation, rate limiting'
+  }
+
+  zt_secrets = securityService 'Zero‑Trust: Secrets Governance' {
+    description 'Key Vault, managed identities, credential rotation'
+  }
+}
+
+model {
+
+  // --- Identity & Access ---
+  zt_auth -> FDS.frontend : 'OIDC + MFA + Conditional Access'
+  zt_auth -> FDS.apis.* : 'JWT validation + token lifetime enforcement'
+
+  zt_authorization -> FDS.backend.* : 'Least privilege service roles'
+  zt_authorization -> FDS.apis.* : 'Role-based API scopes'
+  zt_authorization -> FDS.databases.FDSDB : 'DB-level RBAC'
+
+  // --- Device Trust ---
+  zt_device -> PDA : 'Managed device compliance'
+  zt_device -> console : 'Device posture checks'
+
+  // --- Micro‑Segmentation ---
+  zt_microsegmentation -> FDS.frontend : 'Frontend segment'
+  zt_microsegmentation -> FDS.apis : 'API segment'
+  zt_microsegmentation -> FDS.backend : 'Backend segment'
+  zt_microsegmentation -> FDS.databases : 'Data segment'
+  zt_microsegmentation -> MQ : 'Integration segment'
+  zt_microsegmentation -> FTPS : 'File transfer segment'
+
+  // --- Encryption Everywhere ---
+  zt_encryption -> MQ : 'TLS-secured MQ channels'
+  zt_encryption -> FTPS : 'Encrypted file transfer'
+  zt_encryption -> FDS.apis.* : 'HTTPS/TLS 1.2+'
+  zt_encryption -> FDS.databases.* : 'TDE + encrypted backups'
+
+  // --- Continuous Monitoring ---
+  zt_monitoring -> FDS.backend.* : 'Behavioural analytics'
+  zt_monitoring -> FDS.apis.* : 'API anomaly detection'
+  zt_monitoring -> MQ : 'Integration anomaly detection'
+  zt_monitoring -> FTPS : 'File transfer anomaly detection'
+
+  // --- Policy Enforcement ---
+  zt_policy -> APIM : 'Rate limiting, schema validation, IP filtering'
+  zt_policy -> FDS.frontend : 'WAF rules'
+  zt_policy -> FDS.apis.* : 'Input validation + throttling'
+
+  // --- Secrets Governance ---
+  zt_secrets -> FDS.backend.secretmanagement : 'Managed identities + Key Vault'
+  zt_secrets -> FDS.dataintegration.dataimport : 'Secure credentials'
+  zt_secrets -> FDS.dataintegration.dataexport : 'Rotated integration keys'
+}
+
+views {
+  view zero_trust_combined {
+    title 'Zero‑Trust + DFD + STRIDE Combined View'
+
+    // Core data flow components
+    include FDS.frontend.*, FDS.apis.*, FDS.backend.*, FDS.databases.*
+    include FDS.dataintegration.dataimport, FDS.dataintegration.dataexport
+    include MQ, FTPS
+    include barcodescanner, PSP, M5, Winpak
+
+    // STRIDE threats
+    include threat_*
+
+    // Zero‑Trust controls
+    include zt_auth, zt_authorization, zt_microsegmentation
+    include zt_device, zt_encryption, zt_monitoring
+    include zt_policy, zt_secrets
+
+    // Styling
+    style threat_* {
+      color red
+      shape hexagon
+      opacity 80
+    }
+
+    style zt_* {
+      color blue
+      shape rounded-box
+      opacity 70
+    }
+  }
+}
+  */

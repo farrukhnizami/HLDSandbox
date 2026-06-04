@@ -1,0 +1,131 @@
+/*
+specification {
+  element threat
+  element securityBoundary
+}
+
+
+model {
+
+  // --- Spoofing ---
+  t_spoof_user = threat 'Spoofing: User Identity' {
+    description 'Attacker pretends to be a legitimate OPG/COM user to access FDS.'
+  }
+
+  t_spoof_service = threat 'Spoofing: Service Identity' {
+    description 'Attacker pretends to be a trusted upstream system (MQ/FTPS/JoinedUp).'
+  }
+
+  t_spoof_user -> FDS.frontend 'Uses stolen credentials / session tokens'
+  t_spoof_service -> BIG.MQ 'Sends forged messages'
+  t_spoof_service -> BIG.FTPS 'Uploads forged files'
+
+  // --- Tampering ---
+  t_tamper_payload = threat 'Tampering: API Payloads' {
+    description 'Modification of duty, timesheet or attendance data in transit.'
+  }
+
+  t_tamper_files = threat 'Tampering: Import Files' {
+    description 'Modification of files sent via FTPS before ingestion.'
+  }
+
+  t_tamper_payload -> FDS.apis 'Alters request/response data'
+  t_tamper_files -> BIG.FTPS 'Modifies CSV/XML files before Data Import'
+  t_tamper_files -> FDS.dataintegration.dataimport 'Injects malformed data'
+
+  // --- Repudiation ---
+  t_repudiation_user = threat 'Repudiation: User Actions' {
+    description 'Users deny having approved duties or timesheets.'
+  }
+
+  t_repudiation_admin = threat 'Repudiation: Admin Changes' {
+    description 'Admins deny configuration or security‑relevant changes.'
+  }
+
+  t_repudiation_user -> FDS.frontend.timesheet 'Approvals without sufficient audit trail'
+  t_repudiation_user -> FDS.frontend.approvals 'Duty approvals not fully logged'
+  t_repudiation_admin -> FDS.apis.actionLog 'Insufficient admin activity logging'
+
+  // --- Information Disclosure ---
+  t_info_pii = threat 'Information Disclosure: PII & HR Data' {
+    description 'Exposure of personal and HR data from FDS DB and staging.'
+  }
+
+  t_info_integration = threat 'Information Disclosure: Integration Data' {
+    description 'Exposure of data in transit via MQ/FTPS/Data Platform.'
+  }
+
+  t_info_pii -> FDS.databases.FDSDB 'Unauthorised read access'
+  t_info_pii -> FDS.databases.StagingDB 'Staging data exposed'
+  t_info_integration -> BIG.MQ 'Sniffing messages in transit'
+  t_info_integration -> BIG.FTPS 'Intercepting files in transit'
+  t_info_integration -> DataPlatform 'Over‑permissive access to reporting data'
+
+  // --- Denial of Service ---
+  t_dos_frontend = threat 'DoS: Frontend & APIs' {
+    description 'Overwhelming FDS frontend and APIs with traffic.'
+  }
+
+  t_dos_integration = threat 'DoS: Integration Channels' {
+    description 'Flooding MQ/FTPS to disrupt data flows.'
+  }
+
+  t_dos_frontend -> FDS.frontend 'High volume requests'
+  t_dos_frontend -> FDS.apis 'API flooding / resource exhaustion'
+  t_dos_integration -> BIG.MQ 'Message flooding'
+  t_dos_integration -> BIG.FTPS 'Bulk file uploads'
+
+  // --- Elevation of Privilege ---
+  t_eop_app = threat 'Elevation of Privilege: Application' {
+    description 'Exploiting application flaws to gain higher privileges.'
+  }
+
+  t_eop_db = threat 'Elevation of Privilege: Database' {
+    description 'Abusing DB permissions to bypass application controls.'
+  }
+
+  t_eop_app -> FDS.backend 'Abuses missing authorisation checks'
+  t_eop_app -> FDS.apis 'Bypasses role checks at API layer'
+  t_eop_db -> FDS.databases.FDSDB 'Direct DB access with over‑privileged accounts'
+}
+
+views {
+
+  view stride_spoofing {
+    title 'STRIDE – Spoofing'
+    include t_spoof_service, t_spoof_user
+    include FDS.frontend, BIG.MQ, BIG.FTPS
+  }
+
+  view stride_tampering {
+    title 'STRIDE – Tampering'
+    include t_tamper_files, t_tamper_payload
+    include FDS.apis.*, BIG.FTPS, FDS.dataintegration.dataimport
+  }
+
+  view stride_repudiation {
+    title 'STRIDE – Repudiation'
+    include t_repudiation_admin, t_repudiation_user
+    include FDS.frontend.timesheet, FDS.frontend.approvals, FDS.apis.actionLog
+  }
+
+  view stride_information_disclosure {
+    title 'STRIDE – Information Disclosure'
+    include t_info_integration, t_info_pii
+    include FDS.databases.FDSDB, FDS.databases.StagingDB, BIG.MQ, BIG.FTPS, DataPlatform
+  }
+
+  view stride_dos {
+    title 'STRIDE – Denial of Service'
+    include t_dos_frontend, t_dos_integration
+    include FDS.frontend, FDS.apis.*, BIG.MQ, BIG.FTPS
+  }
+
+  view stride_eop {
+    title 'STRIDE – Elevation of Privilege'
+    include t_eop_app, t_eop_db
+    include FDS.backend.*, FDS.apis.*, FDS.databases.FDSDB
+  }
+    
+}
+  */
