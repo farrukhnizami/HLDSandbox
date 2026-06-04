@@ -46,7 +46,6 @@ _See_ https://docs.arc42.org/section-7/[Deployment View] _in the arc42 documenta
 
 
 .Deployment Diagram
-image::../model/diagrams/deployment/azuredeployment.png[Deployment Diagram]
 
 === Infrastructure Level 1 - Logical environments
 
@@ -59,7 +58,6 @@ image::../model/diagrams/deployment/azuredeployment.png[Deployment Diagram]
 === System Landscape 
 
 .System Landscape Diagram
-image::../model/diagrams/index.png[System Landscape Diagram]
 
 === Infrastructure Level 1 - Production topology
 

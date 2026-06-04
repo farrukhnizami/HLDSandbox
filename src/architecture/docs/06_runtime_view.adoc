@@ -43,9 +43,7 @@ documentation._
 ==== Activity Diagram – Approve Overtime 
 
 .Activity Diagram – Approve Overtime
-image::../model/diagrams//use-cases/use-case-approve-overtime-activity.png[Approve Overtime Activity Diagram]
 
 ==== Sequence Diagram – Approve Overtime
 
 .Sequence Diagram – Approve Overtime
-image::../model/diagrams//use-cases/use-case-approve-overtime-sequence.png[Approve Overtime Sequence Diagram]

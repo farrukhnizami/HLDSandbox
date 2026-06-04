@@ -36,12 +36,9 @@ _See_ https://docs.arc42.org/section-5/[Building Block View] _in the arc42 docum
 === Container Diagram
 
 .Container Diagram
-image::../model/diagrams/container.png[Container Diagram]
 
 === Component Diagram (Backend Components)
 
 .Component Diagram (Backend Component)
-image::../model/diagrams//backendcomponents.png[Component Diagram]
 
 .Component Diagram (Frontend Component)
-image::../model/diagrams//frontendcomponents.png[Component Diagram]
